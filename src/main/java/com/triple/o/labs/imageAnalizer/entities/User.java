@@ -1,6 +1,5 @@
 package com.triple.o.labs.imageAnalizer.entities;
 
-import com.triple.o.labs.imageAnalizer.enums.Roles;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
@@ -12,24 +11,26 @@ import java.util.Set;
 @Getter
 @Setter
 @Where(clause = "ACTIVE = 1")
-public class User {
+public class User extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     Long id;
 
-    @Column
+    @Column(nullable = false)
+    String username;
+
+    @Column(nullable = false)
+    String password;
+
+    @Column(nullable = false)
     String name;
 
     @Column
     String email;
 
     @Column(nullable = false)
-    @Enumerated
-    Roles role;
-
-    @Column(nullable = false)
-    boolean active = true;
+    String role;
 
     @OneToMany
     private Set<Patient> patients;
