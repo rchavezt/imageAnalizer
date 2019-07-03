@@ -25,12 +25,12 @@ public class UserController {
         return userService.getUser(id);
     }
 
-    @RequestMapping(value = "/addUser", method = RequestMethod.POST, produces = "application/json")
-    public UserDto addUser(@RequestBody UserDto user) {
-        return userService.addUser(user);
+    @RequestMapping(value = "/addOrUpdate", method = RequestMethod.POST, produces = "application/json")
+    public UserDto addOrUpdateUser(@RequestBody UserDto user) {
+        return userService.addOrUpdateUser(user);
     }
 
-    @RequestMapping(value = "/deactivateUser/{id}", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/deactivate/{id}", method = RequestMethod.POST, produces = "application/json")
     public UserDto deactivateUser(@PathVariable Long id){
         return userService.deactivateUser(id);
     }

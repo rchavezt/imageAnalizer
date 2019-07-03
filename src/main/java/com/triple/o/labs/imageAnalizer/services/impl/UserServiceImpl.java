@@ -31,8 +31,16 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto addUser(UserDto user) {
-        User newUser = new User();
+    public UserDto addOrUpdateUser(UserDto user) {
+        User newUser;
+        try {
+             Optional<User> existingUser = usersDao.findById(user.getId());
+             newUser = existingUser.get();
+        } catch (Exception e) {
+            //TODO:Add log
+            newUser = new User();
+        }
+
         BeanUtils.copyProperties(user, newUser);
         newUser = usersDao.save(newUser);
         BeanUtils.copyProperties(newUser,user);
