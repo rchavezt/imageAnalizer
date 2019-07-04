@@ -5,11 +5,10 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class UserDto {
+public class PatientDto {
     private Long id;
-    private String username;
-    private String password;
-    private String name;
+    private String title;
+    private String firstName;
+    private String lastName;
     private String email;
-    private String role;
 }

@@ -18,7 +18,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UsersDao usersDao;
 
-    public List<UserDto> getUsers() {
+    public List<User> getUsers() {
         List<User> userList = usersDao.findAll();
         List<UserDto> userDtoList = new ArrayList<>();
         for(User user : userList) {
@@ -26,12 +26,13 @@ public class UserServiceImpl implements UserService {
             BeanUtils.copyProperties(user, userDto);
             userDtoList.add(userDto);
         }
-
-        return userDtoList;
+        //FIXME
+        //return userDtoList;
+        return null;
     }
 
     @Override
-    public UserDto addOrUpdateUser(UserDto user) {
+    public User addOrUpdateUser(UserDto user) {
         User newUser;
         try {
              Optional<User> existingUser = usersDao.findById(user.getId());
@@ -44,26 +45,28 @@ public class UserServiceImpl implements UserService {
         BeanUtils.copyProperties(user, newUser);
         newUser = usersDao.save(newUser);
         BeanUtils.copyProperties(newUser,user);
-        return user;
+        //FIXME
+        //return user;
+        return null;
     }
 
     @Override
-    public UserDto getUser(Long id) {
+    public User getUser(Long id) {
         Optional<User> user = usersDao.findById(id);
-        UserDto returnUser = new UserDto();
-        BeanUtils.copyProperties(user.get(), returnUser);
-        return returnUser;
+        return user.get();
     }
 
 
     @Override
-    public UserDto deactivateUser(Long id) {
+    public User deactivateUser(Long id) {
         UserDto returnUser = new UserDto();
         Optional<User> userAsOptional = usersDao.findById(id);
         User user = userAsOptional.get();
         user.setActive(false);
         user = usersDao.save(user);
         BeanUtils.copyProperties(user, returnUser);
-        return returnUser;
+        //FIXME
+        //return returnUser;
+        return null;
     }
 }

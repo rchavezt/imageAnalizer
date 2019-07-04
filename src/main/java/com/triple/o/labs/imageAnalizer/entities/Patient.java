@@ -15,16 +15,22 @@ public class Patient extends CommonEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    Long id;
+    private Long id;
 
     @Column
-    String name;
+    private String title;
+
+    @Column
+    private String firstName;
+
+    @Column
+    private String lastName;
 
     @Column
     String email;
 
     @ManyToOne
-    @JoinColumn(name="user_id", nullable=false)
+    @JoinColumn(nullable=false)
     private User doctorUser;
 
     @OneToMany

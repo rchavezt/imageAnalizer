@@ -7,6 +7,6 @@ import com.triple.o.labs.imageAnalizer.entities.User;
 import java.util.Set;
 
 public interface CaseService {
-    Set<MedicalCaseDto> getCasesByDoctor(User user);
-    MedicalCaseDto createMedicalCase(MedicalCaseDto medicalCase) throws Exception;
+    Set<MedicalCase> getCasesByDoctor(User user);
+    MedicalCase createMedicalCase(MedicalCaseDto medicalCase) throws Exception;
 }

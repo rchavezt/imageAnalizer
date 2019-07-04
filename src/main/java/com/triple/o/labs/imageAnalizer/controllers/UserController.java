@@ -17,22 +17,30 @@ public class UserController {
 
     @RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = "application/json")
     public List<UserDto> getAllUsers(){
-        return userService.getUsers();
+        //FIXME
+        //return userService.getUsers();
+        return null;
     }
 
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = "application/json")
     public UserDto getUser(@PathVariable Long id){
-        return userService.getUser(id);
+        //FIXME
+        //return userService.getUser(id);
+        return null;
     }
 
     @RequestMapping(value = "/addOrUpdate", method = RequestMethod.POST, produces = "application/json")
     public UserDto addOrUpdateUser(@RequestBody UserDto user) {
-        return userService.addOrUpdateUser(user);
+        //FIXME
+        //return userService.addOrUpdateUser(user);
+        return null;
     }
 
     @RequestMapping(value = "/deactivate/{id}", method = RequestMethod.POST, produces = "application/json")
     public UserDto deactivateUser(@PathVariable Long id){
-        return userService.deactivateUser(id);
+        //FIXME
+        //return userService.deactivateUser(id);
+        return null;
     }
 
 
