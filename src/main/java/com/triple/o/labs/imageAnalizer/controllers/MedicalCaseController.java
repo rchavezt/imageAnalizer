@@ -7,14 +7,11 @@ import com.triple.o.labs.imageAnalizer.dtos.PatientDto;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
 import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.services.CaseService;
-import com.triple.o.labs.imageAnalizer.services.PatientService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
-import java.util.Optional;
 import java.util.Set;
 
 @RestController

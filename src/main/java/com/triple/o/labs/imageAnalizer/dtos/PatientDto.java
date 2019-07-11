@@ -8,6 +8,7 @@ import lombok.Setter;
 public class PatientDto {
     private Long id;
     private String title;
+    private String fullName;
     private String firstName;
     private String lastName;
     private String email;

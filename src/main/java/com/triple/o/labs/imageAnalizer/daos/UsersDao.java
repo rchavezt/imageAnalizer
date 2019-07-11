@@ -9,4 +9,7 @@ import java.util.List;
 public interface UsersDao extends CrudRepository<User,Long> {
     List<User> findAll();
     User findByUsername(String username);
+    User findByUsernameOrEmail(String username, String email);
+    Boolean existsByUsername(String username);
+    Boolean existsByEmail(String email);
 }

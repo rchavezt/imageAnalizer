@@ -32,6 +32,7 @@ public class PatientController {
         for (Patient patient : patients) {
             PatientDto patientDto = new PatientDto();
             BeanUtils.copyProperties(patient, patientDto);
+            patientDto.setFullName(patient.getFirstName().concat(" ").concat(patient.getLastName()));
             patientDtoSet.add(patientDto);
         }
 

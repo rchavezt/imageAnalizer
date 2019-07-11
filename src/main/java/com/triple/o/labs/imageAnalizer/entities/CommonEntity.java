@@ -5,7 +5,6 @@ import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
 import javax.persistence.PreUpdate;
 import java.sql.Timestamp;
-import java.util.Date;
 
 @MappedSuperclass
 public abstract class CommonEntity {
