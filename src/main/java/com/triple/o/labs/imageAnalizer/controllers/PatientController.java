@@ -23,7 +23,7 @@ public class PatientController {
     private UserService userService;
 
     @RequestMapping(value = "/doctor/{id}", method = RequestMethod.GET, produces = "application/json")
-    public Set<PatientDto> getPatientByDoctor(@RequestParam Long id) {
+    public Set<PatientDto> getPatientByDoctor(@PathVariable Long id) {
         User doctor = userService.getUser(id);
         Set<Patient> patients = patientService.getPatientsByDoctor(doctor);
 
