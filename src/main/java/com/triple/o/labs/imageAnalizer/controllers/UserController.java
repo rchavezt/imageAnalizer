@@ -1,8 +1,12 @@
 package com.triple.o.labs.imageAnalizer.controllers;
 
 
+import com.triple.o.labs.imageAnalizer.config.UserPrincipal;
+import com.triple.o.labs.imageAnalizer.config.security.CurrentUser;
 import com.triple.o.labs.imageAnalizer.dtos.UserDto;
+import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.services.UserService;
+import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -41,6 +45,14 @@ public class UserController {
         //FIXME
         //return userService.deactivateUser(id);
         return null;
+    }
+
+    @RequestMapping(value = "/me", method = RequestMethod.GET, produces = "application/json")
+    public UserDto getActualUser(@CurrentUser UserPrincipal userPrincipal){
+        User user = userService.getUser(userPrincipal.getId());
+        UserDto userDto = new UserDto();
+        BeanUtils.copyProperties(user, userDto);
+        return userDto;
     }
 
 
