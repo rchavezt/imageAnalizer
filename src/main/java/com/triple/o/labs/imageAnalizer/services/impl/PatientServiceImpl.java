@@ -33,13 +33,10 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient addPatient(PatientDto patientDto) {
-        Optional<User> user = usersDao.findById(1L);
+    public Patient addPatient(User user, PatientDto patientDto) {
         Patient patient = new Patient();
-
         BeanUtils.copyProperties(patientDto, patient);
-
-        patient.setDoctorUser(user.get());
+        patient.setDoctorUser(user);
         return patientDao.save(patient);
     }
 }

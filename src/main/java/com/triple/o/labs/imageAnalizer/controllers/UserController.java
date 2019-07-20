@@ -8,17 +8,19 @@ import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.services.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
-@RequestMapping("/user")
+@RequestMapping(value = "/user", headers = "Authorization")
 public class UserController {
 
     @Autowired
     UserService userService;
 
+    @Secured("ROLE_USER_LIST")
     @RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = "application/json")
     public List<UserDto> getAllUsers(){
         //FIXME
@@ -26,6 +28,7 @@ public class UserController {
         return null;
     }
 
+    @Secured("ROLE_USER_VIEW")
     @RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = "application/json")
     public UserDto getUser(@PathVariable Long id){
         //FIXME
@@ -33,13 +36,15 @@ public class UserController {
         return null;
     }
 
-    @RequestMapping(value = "/addOrUpdate", method = RequestMethod.POST, produces = "application/json")
+    @Secured("ROLE_USER_CREATE")
+    @RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json")
     public UserDto addOrUpdateUser(@RequestBody UserDto user) {
         //FIXME
         //return userService.addOrUpdateUser(user);
         return null;
     }
 
+    @Secured("ROLE_USER_DELETE")
     @RequestMapping(value = "/deactivate/{id}", method = RequestMethod.POST, produces = "application/json")
     public UserDto deactivateUser(@PathVariable Long id){
         //FIXME

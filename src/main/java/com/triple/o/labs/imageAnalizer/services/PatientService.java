@@ -9,5 +9,5 @@ import java.util.Set;
 public interface PatientService {
     Patient getPatient(Long id);
     Set<Patient> getPatientsByDoctor(User doctor);
-    Patient addPatient(PatientDto patientDto);
+    Patient addPatient(User user,PatientDto patientDto);
 }

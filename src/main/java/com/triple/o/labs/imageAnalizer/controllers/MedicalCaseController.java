@@ -1,5 +1,7 @@
 package com.triple.o.labs.imageAnalizer.controllers;
 
+import com.triple.o.labs.imageAnalizer.config.UserPrincipal;
+import com.triple.o.labs.imageAnalizer.config.security.CurrentUser;
 import com.triple.o.labs.imageAnalizer.daos.UsersDao;
 import com.triple.o.labs.imageAnalizer.dtos.MedicalCaseDto;
 import com.triple.o.labs.imageAnalizer.dtos.MedicalCaseResponseDto;
@@ -9,13 +11,14 @@ import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.services.CaseService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.HashSet;
 import java.util.Set;
 
 @RestController
-@RequestMapping("/case")
+@RequestMapping(value = "/case", headers = "Authorization")
 public class MedicalCaseController {
 
     @Autowired
@@ -24,10 +27,10 @@ public class MedicalCaseController {
     @Autowired
     UsersDao usersDao;
 
-    @RequestMapping(value = "/get/doctor/{id}", method = RequestMethod.GET, produces = "application/json")
-    //@PreAuthorize("hasRole('ROLE_DOCTOR') or hasRole('ROLE_LABORATORY')")
-    public Set<MedicalCaseResponseDto> getMedicalCasebyDoctor(@PathVariable Long id){
-        User doctor = usersDao.findById(id).get();
+    @Secured("ROLE_CASES_LIST")
+    @RequestMapping(value = "/get/user", method = RequestMethod.GET, produces = "application/json")
+    public Set<MedicalCaseResponseDto> getMedicalCasebyDoctor(@CurrentUser UserPrincipal userPrincipal){
+        User doctor = usersDao.findById(userPrincipal.getId()).get();
         Set<MedicalCase> medicalCases = caseService.getCasesByDoctor(doctor);
         Set<MedicalCaseResponseDto> response = new HashSet<>();
         for (MedicalCase medicalCase : medicalCases){
@@ -42,9 +45,11 @@ public class MedicalCaseController {
         return response;
     }
 
+    @Secured("ROLE_CASES_CREATE")
     @RequestMapping(value = "/new", method = RequestMethod.POST, produces = "application/json")
-    public MedicalCaseDto createMedicatCase(@RequestBody MedicalCaseDto medicalCaseDto) throws Exception {
-        MedicalCase medicalCase = caseService.createMedicalCase(medicalCaseDto);
+    public MedicalCaseDto createMedicatCase(@CurrentUser UserPrincipal userPrincipal, @RequestBody MedicalCaseDto medicalCaseDto) throws Exception {
+        User user = usersDao.findById(userPrincipal.getId()).get();
+        MedicalCase medicalCase = caseService.createMedicalCase(user, medicalCaseDto);
         BeanUtils.copyProperties(medicalCase, medicalCaseDto);
         return medicalCaseDto;
     }

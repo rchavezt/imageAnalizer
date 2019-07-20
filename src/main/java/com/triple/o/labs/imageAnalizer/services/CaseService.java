@@ -8,5 +8,5 @@ import java.util.Set;
 
 public interface CaseService {
     Set<MedicalCase> getCasesByDoctor(User user);
-    MedicalCase createMedicalCase(MedicalCaseDto medicalCase) throws Exception;
+    MedicalCase createMedicalCase(User user, MedicalCaseDto medicalCase) throws Exception;
 }

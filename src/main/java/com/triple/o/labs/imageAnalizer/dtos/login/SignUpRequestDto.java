@@ -1,5 +1,6 @@
 package com.triple.o.labs.imageAnalizer.dtos.login;
 
+import com.triple.o.labs.imageAnalizer.enums.UserType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -21,4 +22,6 @@ public class SignUpRequestDto {
 
     @NotBlank
     private String password;
+
+    private UserType userType;
 }

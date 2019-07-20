@@ -1,5 +1,6 @@
 package com.triple.o.labs.imageAnalizer.entities;
 
+import com.triple.o.labs.imageAnalizer.enums.RoleName;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -13,6 +14,7 @@ public class Role {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Enumerated(EnumType.STRING)
     @Column
-    private String name;
+    private RoleName name;
 }

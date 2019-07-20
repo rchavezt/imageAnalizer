@@ -3,7 +3,6 @@ package com.triple.o.labs.imageAnalizer.services.impl;
 import com.triple.o.labs.imageAnalizer.config.UserPrincipal;
 import com.triple.o.labs.imageAnalizer.daos.UsersDao;
 import com.triple.o.labs.imageAnalizer.entities.User;
-import com.triple.o.labs.imageAnalizer.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

@@ -9,7 +9,8 @@ import com.triple.o.labs.imageAnalizer.dtos.login.LoginRequestDto;
 import com.triple.o.labs.imageAnalizer.dtos.login.SignUpRequestDto;
 import com.triple.o.labs.imageAnalizer.entities.Role;
 import com.triple.o.labs.imageAnalizer.entities.User;
-import com.triple.o.labs.imageAnalizer.exceptions.AppException;
+import com.triple.o.labs.imageAnalizer.enums.RoleName;
+import com.triple.o.labs.imageAnalizer.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -27,6 +28,8 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import javax.validation.Valid;
 import java.net.URI;
 import java.util.Collections;
+import java.util.HashSet;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/auth")
@@ -39,7 +42,7 @@ public class AuthController {
     UsersDao userRepository;
 
     @Autowired
-    RoleDao roleRepository;
+    RoleService roleService;
 
     @Autowired
     PasswordEncoder passwordEncoder;
@@ -75,24 +78,17 @@ public class AuthController {
                     HttpStatus.BAD_REQUEST);
         }
 
-        // Creating user's account
         User user = new User();
-
         user.setName(signUpRequest.getName());
         user.setUsername(signUpRequest.getUsername());
         user.setEmail(signUpRequest.getEmail());
-        user.setPassword(signUpRequest.getPassword());
-
         user.setPassword(passwordEncoder.encode(user.getPassword()));
-
-        Role userRole = roleRepository.findByName("ROLE_USER");
-
-        user.setRoles(Collections.singleton(userRole));
+        user.setRoles(roleService.getSignupRoles(signUpRequest.getUserType()));
 
         User result = userRepository.save(user);
 
         URI location = ServletUriComponentsBuilder
-                .fromCurrentContextPath().path("/api/users/{username}")
+                .fromCurrentContextPath().path("/users/{username}")
                 .buildAndExpand(result.getUsername()).toUri();
 
         return ResponseEntity.created(location).body(new ApiResponse(true, "User registered successfully"));

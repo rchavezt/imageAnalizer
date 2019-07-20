@@ -32,14 +32,14 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
-    public MedicalCase createMedicalCase(MedicalCaseDto medicalCaseDto) throws Exception {
+    public MedicalCase createMedicalCase(User user, MedicalCaseDto medicalCaseDto) throws Exception {
         MedicalCase medicalCase = new MedicalCase();
         BeanUtils.copyProperties(medicalCaseDto, medicalCase);
 
         try {
             Patient patient = patientService.getPatient(medicalCaseDto.getPatientId());
             medicalCase.setPatient(patient);
-            medicalCase.setUser(usersDao.findById(1L).get());
+            medicalCase.setUser(user);
             return casesDao.save(medicalCase);
         } catch (Exception e) {
             throw new Exception(e);
