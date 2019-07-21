@@ -3,7 +3,6 @@ package com.triple.o.labs.imageAnalizer.services.impl;
 import com.triple.o.labs.imageAnalizer.daos.UsersDao;
 import com.triple.o.labs.imageAnalizer.dtos.UserDto;
 import com.triple.o.labs.imageAnalizer.entities.User;
-import com.triple.o.labs.imageAnalizer.enums.UserType;
 import com.triple.o.labs.imageAnalizer.services.UserService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;

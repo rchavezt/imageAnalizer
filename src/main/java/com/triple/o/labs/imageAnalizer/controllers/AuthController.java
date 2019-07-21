@@ -1,15 +1,12 @@
 package com.triple.o.labs.imageAnalizer.controllers;
 
 import com.triple.o.labs.imageAnalizer.config.JwtTokenProvider;
-import com.triple.o.labs.imageAnalizer.daos.RoleDao;
 import com.triple.o.labs.imageAnalizer.daos.UsersDao;
 import com.triple.o.labs.imageAnalizer.dtos.login.ApiResponse;
 import com.triple.o.labs.imageAnalizer.dtos.login.JwtAuthenticationResponse;
 import com.triple.o.labs.imageAnalizer.dtos.login.LoginRequestDto;
 import com.triple.o.labs.imageAnalizer.dtos.login.SignUpRequestDto;
-import com.triple.o.labs.imageAnalizer.entities.Role;
 import com.triple.o.labs.imageAnalizer.entities.User;
-import com.triple.o.labs.imageAnalizer.enums.RoleName;
 import com.triple.o.labs.imageAnalizer.services.RoleService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -27,9 +24,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import javax.validation.Valid;
 import java.net.URI;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.Set;
 
 @RestController
 @RequestMapping("/auth")
@@ -82,8 +76,9 @@ public class AuthController {
         user.setName(signUpRequest.getName());
         user.setUsername(signUpRequest.getUsername());
         user.setEmail(signUpRequest.getEmail());
-        user.setPassword(passwordEncoder.encode(user.getPassword()));
+        user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRoles(roleService.getSignupRoles(signUpRequest.getUserType()));
+        user.setUserType(signUpRequest.getUserType());
 
         User result = userRepository.save(user);
 

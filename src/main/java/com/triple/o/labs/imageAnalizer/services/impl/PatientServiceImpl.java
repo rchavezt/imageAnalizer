@@ -10,6 +10,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 import java.util.Set;
 
@@ -28,6 +29,11 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
+    public List<Patient> getAll() {
+        return (List<Patient>) patientDao.findAll();
+    }
+
+    @Override
     public Set<Patient> getPatientsByDoctor(User doctor) {
         return patientDao.findAllByDoctorUser(doctor);
     }
@@ -37,6 +43,20 @@ public class PatientServiceImpl implements PatientService {
         Patient patient = new Patient();
         BeanUtils.copyProperties(patientDto, patient);
         patient.setDoctorUser(user);
+        return patientDao.save(patient);
+    }
+
+    @Override
+    public Patient editPatient(Long id, PatientDto patientDto) {
+        Patient patient = patientDao.findById(id).get();
+        BeanUtils.copyProperties(patientDto, patient);
+        return patientDao.save(patient);
+    }
+
+    @Override
+    public Patient deactivatePatient(Long id) {
+        Patient patient = patientDao.findById(id).get();
+        patient.setActive(false);
         return patientDao.save(patient);
     }
 }

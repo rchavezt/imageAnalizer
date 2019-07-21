@@ -20,32 +20,32 @@ public class UserController {
     @Autowired
     UserService userService;
 
-    @Secured("ROLE_USER_LIST")
-    @RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = "application/json")
+    //@Secured("ROLE_USER_LIST")
+    //@RequestMapping(value = "/getAll", method = RequestMethod.GET, produces = "application/json")
     public List<UserDto> getAllUsers(){
         //FIXME
         //return userService.getUsers();
         return null;
     }
 
-    @Secured("ROLE_USER_VIEW")
-    @RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = "application/json")
+    //@Secured("ROLE_USER_VIEW")
+    //@RequestMapping(value = "/get/{id}", method = RequestMethod.GET, produces = "application/json")
     public UserDto getUser(@PathVariable Long id){
         //FIXME
         //return userService.getUser(id);
         return null;
     }
 
-    @Secured("ROLE_USER_CREATE")
-    @RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json")
+    //@Secured("ROLE_USER_CREATE")
+    //@RequestMapping(value = "/add", method = RequestMethod.POST, produces = "application/json")
     public UserDto addOrUpdateUser(@RequestBody UserDto user) {
         //FIXME
         //return userService.addOrUpdateUser(user);
         return null;
     }
 
-    @Secured("ROLE_USER_DELETE")
-    @RequestMapping(value = "/deactivate/{id}", method = RequestMethod.POST, produces = "application/json")
+    //@Secured("ROLE_USER_DELETE")
+    //@RequestMapping(value = "/deactivate/{id}", method = RequestMethod.POST, produces = "application/json")
     public UserDto deactivateUser(@PathVariable Long id){
         //FIXME
         //return userService.deactivateUser(id);

@@ -1,5 +1,6 @@
 package com.triple.o.labs.imageAnalizer.entities;
 
+import com.triple.o.labs.imageAnalizer.enums.UserType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
@@ -29,6 +30,10 @@ public class User extends CommonEntity {
 
     @Column
     String email;
+
+    @Enumerated(EnumType.STRING)
+    @Column
+    UserType userType;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(name = "user_roles",
