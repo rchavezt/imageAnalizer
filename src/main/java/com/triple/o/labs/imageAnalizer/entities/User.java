@@ -13,7 +13,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Where(clause = "ACTIVE = 1")
-public class User extends CommonEntity {
+public class User extends UserTrackingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

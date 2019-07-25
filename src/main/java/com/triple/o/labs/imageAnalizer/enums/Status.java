@@ -1,6 +1,6 @@
 package com.triple.o.labs.imageAnalizer.enums;
 
-public enum Statuses {
+public enum Status {
     NEW,
     UPLOAD,
     IN_PROCESS,

@@ -1,5 +1,6 @@
 package com.triple.o.labs.imageAnalizer.entities;
 
+import com.triple.o.labs.imageAnalizer.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
@@ -11,7 +12,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Where(clause = "ACTIVE = 1")
-public class MedicalCase extends CommonEntity{
+public class MedicalCase extends UserTrackingEntity{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -19,6 +20,10 @@ public class MedicalCase extends CommonEntity{
 
     @Column
     private String detail;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Status status;
 
     @ManyToOne
     @JoinColumn(name="patient_id", nullable=false)

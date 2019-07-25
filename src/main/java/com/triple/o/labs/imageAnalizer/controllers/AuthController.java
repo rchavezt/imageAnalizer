@@ -1,6 +1,8 @@
 package com.triple.o.labs.imageAnalizer.controllers;
 
 import com.triple.o.labs.imageAnalizer.config.JwtTokenProvider;
+import com.triple.o.labs.imageAnalizer.config.UserPrincipal;
+import com.triple.o.labs.imageAnalizer.config.security.CurrentUser;
 import com.triple.o.labs.imageAnalizer.daos.UsersDao;
 import com.triple.o.labs.imageAnalizer.dtos.login.ApiResponse;
 import com.triple.o.labs.imageAnalizer.dtos.login.JwtAuthenticationResponse;
@@ -61,7 +63,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    public ResponseEntity<?> registerUser(@Valid @RequestBody SignUpRequestDto signUpRequest) {
+    public ResponseEntity<?> registerUser(@CurrentUser UserPrincipal userPrincipal, @Valid @RequestBody SignUpRequestDto signUpRequest) {
         if(userRepository.existsByUsername(signUpRequest.getUsername())) {
             return new ResponseEntity(new ApiResponse(false, "Username is already taken!"),
                     HttpStatus.BAD_REQUEST);
@@ -79,7 +81,9 @@ public class AuthController {
         user.setPassword(passwordEncoder.encode(signUpRequest.getPassword()));
         user.setRoles(roleService.getSignupRoles(signUpRequest.getUserType()));
         user.setUserType(signUpRequest.getUserType());
-
+        //TODO: Change for the current user
+        user.setCreatedBy("SomeUser");
+        user.setUpdatedBy("SomeUser");
         User result = userRepository.save(user);
 
         URI location = ServletUriComponentsBuilder

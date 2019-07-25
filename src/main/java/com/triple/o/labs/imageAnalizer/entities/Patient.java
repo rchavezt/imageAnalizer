@@ -11,7 +11,7 @@ import java.util.Set;
 @Getter
 @Setter
 @Where(clause = "ACTIVE = 1")
-public class Patient extends CommonEntity {
+public class Patient extends UserTrackingEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

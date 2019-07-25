@@ -86,7 +86,7 @@ public class PatientController {
         User user = userService.getUser(userPrincipal.getId());
         if (user.getUserType() != UserType.DOCTOR)
                 throw new BadRequestException("User must be Doctor");
-        Patient patient = patientService.addPatient(user, patientDto);
+        Patient patient = patientService.addPatient(user, patientDto, user.getUsername());
         BeanUtils.copyProperties(patient, patientDto);
         return patientDto;
     }
@@ -98,7 +98,7 @@ public class PatientController {
         User userDoctor = userService.getUser(idDoctor);
         if (user.getUserType() != UserType.LAB)
             throw new BadRequestException("User must be Laboratory");
-        Patient patient = patientService.addPatient(userDoctor, patientDto);
+        Patient patient = patientService.addPatient(userDoctor, patientDto, user.getUsername());
         BeanUtils.copyProperties(patient, patientDto);
         return patientDto;
     }
@@ -109,10 +109,13 @@ public class PatientController {
         User user = userService.getUser(userPrincipal.getId());
         Patient patient = patientService.getPatient(id);
 
+        if (user.getUserType() != UserType.LAB && user.getUserType() != UserType.DOCTOR)
+            throw new BadRequestException("User must be Doctor or Laboratory");
+
         if (user.getUserType() == UserType.DOCTOR && patient.getDoctorUser() != user)
             throw new BadRequestException("Patient you are trying to edit is assigned to another Doctor");
 
-        patient = patientService.editPatient(id, patientDto);
+        patient = patientService.editPatient(id, patientDto, user.getUsername());
         BeanUtils.copyProperties(patient, patientDto);
         return patientDto;
     }

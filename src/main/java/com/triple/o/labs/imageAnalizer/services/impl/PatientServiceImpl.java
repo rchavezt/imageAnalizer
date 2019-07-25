@@ -38,17 +38,20 @@ public class PatientServiceImpl implements PatientService {
     }
 
     @Override
-    public Patient addPatient(User user, PatientDto patientDto) {
+    public Patient addPatient(User user, PatientDto patientDto, String userCreating) {
         Patient patient = new Patient();
         BeanUtils.copyProperties(patientDto, patient);
         patient.setDoctorUser(user);
+        patient.setCreatedBy(userCreating);
+        patient.setUpdatedBy(userCreating);
         return patientDao.save(patient);
     }
 
     @Override
-    public Patient editPatient(Long id, PatientDto patientDto) {
+    public Patient editPatient(Long id, PatientDto patientDto, String userEditing) {
         Patient patient = patientDao.findById(id).get();
         BeanUtils.copyProperties(patientDto, patient);
+        patient.setUpdatedBy(userEditing);
         return patientDao.save(patient);
     }
 

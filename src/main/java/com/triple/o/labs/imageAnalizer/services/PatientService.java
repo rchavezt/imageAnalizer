@@ -11,7 +11,7 @@ public interface PatientService {
     Patient getPatient(Long id);
     List<Patient> getAll();
     Set<Patient> getPatientsByDoctor(User doctor);
-    Patient addPatient(User user,PatientDto patientDto);
-    Patient editPatient(Long id, PatientDto patientDto);
+    Patient addPatient(User user,PatientDto patientDto, String userCreating);
+    Patient editPatient(Long id, PatientDto patientDto, String userEditing);
     Patient deactivatePatient(Long id);
 }
