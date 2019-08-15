@@ -3,7 +3,9 @@ package com.triple.o.labs.imageAnalizer.services.impl;
 import com.triple.o.labs.imageAnalizer.daos.CasesDao;
 import com.triple.o.labs.imageAnalizer.daos.UsersDao;
 import com.triple.o.labs.imageAnalizer.dtos.MedicalCaseDto;
+import com.triple.o.labs.imageAnalizer.dtos.requests.MedicalCaseRequestDto;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
+import com.triple.o.labs.imageAnalizer.entities.MedicalCaseImage;
 import com.triple.o.labs.imageAnalizer.entities.Patient;
 import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.enums.Status;
@@ -53,13 +55,14 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
-    public MedicalCase createMedicalCase(User user, MedicalCaseDto medicalCaseDto, String userCreating) {
+    public MedicalCase createMedicalCase(User user, MedicalCaseRequestDto medicalCaseRequestDto, MedicalCaseImage medicalCaseImage, String userCreating) {
         MedicalCase medicalCase = new MedicalCase();
-        BeanUtils.copyProperties(medicalCaseDto, medicalCase);
-        Patient patient = patientService.getPatient(medicalCaseDto.getPatientId());
+        BeanUtils.copyProperties(medicalCaseRequestDto, medicalCase);
+        Patient patient = patientService.getPatient(medicalCaseRequestDto.getPatientId());
         medicalCase.setPatient(patient);
         medicalCase.setUser(user);
         medicalCase.setStatus(Status.NEW);
+        medicalCase.setMedicalCaseImage(medicalCaseImage);
         medicalCase.setCreatedBy(userCreating);
         medicalCase.setUpdatedBy(userCreating);
         return casesDao.save(medicalCase);

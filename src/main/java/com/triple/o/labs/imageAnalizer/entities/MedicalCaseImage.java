@@ -15,11 +15,8 @@ public class MedicalCaseImage extends CommonEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Lob
     @Column
-    private String path;
-
-    @ManyToOne
-    @JoinColumn(name="medical_case_id", nullable=false)
-    private MedicalCase medicalCase;
+    private byte[] base64image;
 
 }

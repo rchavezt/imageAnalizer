@@ -1,5 +1,6 @@
-package com.triple.o.labs.imageAnalizer.dtos;
+package com.triple.o.labs.imageAnalizer.dtos.responses;
 
+import com.triple.o.labs.imageAnalizer.dtos.PatientDto;
 import com.triple.o.labs.imageAnalizer.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
@@ -14,5 +15,5 @@ public class MedicalCaseResponseDto {
     private String doctorFullName;
     private PatientDto patient;
     private Status status;
-    private Set<String> medicalCaseImagesUrl;
+    private byte[] medicalCaseImage;
 }

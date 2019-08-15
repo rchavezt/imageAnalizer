@@ -32,8 +32,8 @@ public class MedicalCase extends UserTrackingEntity{
     @OneToOne
     private User user;
 
-    @OneToMany
-    private Set<MedicalCaseImage> medicalCaseImages;
+    @OneToOne
+    private MedicalCaseImage medicalCaseImage;
 
 
 }

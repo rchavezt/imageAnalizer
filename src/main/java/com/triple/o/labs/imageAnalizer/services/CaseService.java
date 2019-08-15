@@ -1,7 +1,9 @@
 package com.triple.o.labs.imageAnalizer.services;
 
 import com.triple.o.labs.imageAnalizer.dtos.MedicalCaseDto;
+import com.triple.o.labs.imageAnalizer.dtos.requests.MedicalCaseRequestDto;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
+import com.triple.o.labs.imageAnalizer.entities.MedicalCaseImage;
 import com.triple.o.labs.imageAnalizer.entities.User;
 
 import java.util.List;
@@ -12,5 +14,5 @@ public interface CaseService {
     MedicalCase getCase(Long id);
     Set<MedicalCase> getCasesByDoctor(User user);
     MedicalCase editMedicatCase(Long id, MedicalCaseDto medicalCaseDto, String userEditing);
-    MedicalCase createMedicalCase(User user, MedicalCaseDto medicalCase, String userCreating);
+    MedicalCase createMedicalCase(User user, MedicalCaseRequestDto medicalCase, MedicalCaseImage medicalCaseImage, String userCreating);
 }
