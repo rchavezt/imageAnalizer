@@ -1,9 +1,5 @@
 package com.triple.o.labs.imageAnalizer.entities;
 
-import com.triple.o.labs.imageAnalizer.config.UserPrincipal;
-import com.triple.o.labs.imageAnalizer.config.security.CurrentUser;
-import lombok.Setter;
-
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;

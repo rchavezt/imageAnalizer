@@ -10,4 +10,5 @@ public interface UserService {
     User addOrUpdateUser(UserDto user);
     User getUser(Long id);
     User deactivateUser(Long id);
+    List<User> getLaboratoryUsers();
 }

@@ -3,15 +3,16 @@ package com.triple.o.labs.imageAnalizer.controllers;
 import com.triple.o.labs.imageAnalizer.config.UserPrincipal;
 import com.triple.o.labs.imageAnalizer.config.security.CurrentUser;
 import com.triple.o.labs.imageAnalizer.dtos.MedicalCaseDto;
-import com.triple.o.labs.imageAnalizer.dtos.responses.MedicalCaseResponseDto;
 import com.triple.o.labs.imageAnalizer.dtos.PatientDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.MedicalCaseRequestDto;
+import com.triple.o.labs.imageAnalizer.dtos.responses.MedicalCaseResponseDto;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCaseImage;
 import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.enums.UserType;
 import com.triple.o.labs.imageAnalizer.exceptions.BadRequestException;
 import com.triple.o.labs.imageAnalizer.services.CaseService;
+import com.triple.o.labs.imageAnalizer.services.NotificationService;
 import com.triple.o.labs.imageAnalizer.services.ScannerImagesService;
 import com.triple.o.labs.imageAnalizer.services.UserService;
 import org.springframework.beans.BeanUtils;
@@ -20,11 +21,6 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import javax.imageio.ImageIO;
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayInputStream;
-import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -42,6 +38,9 @@ public class MedicalCaseController {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Secured("ROLE_CASES_LIST")
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = "application/json")
@@ -119,6 +118,10 @@ public class MedicalCaseController {
         MedicalCaseResponseDto medicalCaseResponseDto = new MedicalCaseResponseDto();
         BeanUtils.copyProperties(medicalCase, medicalCaseResponseDto);
         medicalCaseResponseDto.setMedicalCaseImage(medicalCase.getMedicalCaseImage().getBase64image());
+
+        String notificationMessage = String.format("New case ID: %d for Doctor: %s", medicalCase.getId(), medicalCase.getUser().getName());
+        notificationService.createNotification(notificationMessage);
+
         return medicalCaseResponseDto;
     }
 
