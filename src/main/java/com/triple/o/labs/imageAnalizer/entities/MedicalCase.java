@@ -6,6 +6,7 @@ import lombok.Setter;
 import org.hibernate.annotations.Where;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
@@ -33,4 +34,10 @@ public class MedicalCase extends UserTrackingEntity{
 
     @OneToOne
     private MedicalCaseImage medicalCaseImage;
+
+    @OneToOne
+    private MedicalCaseImage medicalCaseImageAnalyzed;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "medicalCase")
+    private List<SchwarzKorkhausPairPoint> pairPoints;
 }
