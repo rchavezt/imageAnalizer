@@ -1,10 +1,8 @@
 package com.triple.o.labs.imageAnalizer.daos;
 
 import com.triple.o.labs.imageAnalizer.entities.User;
-import com.triple.o.labs.imageAnalizer.enums.UserType;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

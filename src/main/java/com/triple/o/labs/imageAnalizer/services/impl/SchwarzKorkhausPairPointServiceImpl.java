@@ -5,7 +5,6 @@ import com.triple.o.labs.imageAnalizer.daos.SchwarzKorkhausPairPointDao;
 import com.triple.o.labs.imageAnalizer.dtos.SchwarzKorkhausDto;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
 import com.triple.o.labs.imageAnalizer.entities.SchwarzKorkhausPairPoint;
-import com.triple.o.labs.imageAnalizer.services.CaseService;
 import com.triple.o.labs.imageAnalizer.services.SchwarzKorkhausPairPointService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
