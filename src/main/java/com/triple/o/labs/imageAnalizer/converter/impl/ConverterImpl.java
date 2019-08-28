@@ -25,10 +25,12 @@ public class ConverterImpl implements Converter {
         BeanUtils.copyProperties(medicalCase.getPatient(), patientDto);
         medicalCaseResponseDto.setPatient(patientDto);
 
-        for (SchwarzKorkhausPairPoint schwarzKorkhausPairPoint : medicalCase.getPairPoints()){
-            SchwarzKorkhausDto schwarzKorkhausDto = new SchwarzKorkhausDto();
-            BeanUtils.copyProperties(schwarzKorkhausPairPoint, schwarzKorkhausDto);
-            medicalCaseResponseDto.getPairPoints().add(schwarzKorkhausDto);
+        if(medicalCase.getPairPoints() != null) {
+            for (SchwarzKorkhausPairPoint schwarzKorkhausPairPoint : medicalCase.getPairPoints()) {
+                SchwarzKorkhausDto schwarzKorkhausDto = new SchwarzKorkhausDto();
+                BeanUtils.copyProperties(schwarzKorkhausPairPoint, schwarzKorkhausDto);
+                medicalCaseResponseDto.getPairPoints().add(schwarzKorkhausDto);
+            }
         }
 
         return medicalCaseResponseDto;
