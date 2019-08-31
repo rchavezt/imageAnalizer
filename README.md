@@ -17,8 +17,8 @@ The backend is managed by Maven, the goal to compile and deploy is:
 
 Hibernate will create the DB and tomcat will deploy the application
 
-##Swagger
 
+## Swagger
 After the application runs, swagger should be available on:
 
 `http://localhost:9090/imageAnalizer/swagger-ui.html`
