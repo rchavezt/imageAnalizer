@@ -9,8 +9,10 @@ public class SchwarzKorkhausDto {
     private String name;
     private float pointAX;
     private float pointAY;
+    private String nameA;
     private float pointBX;
     private float pointBY;
+    private String nameB;
     private boolean required;
     private String color;
 }

@@ -24,10 +24,16 @@ public class SchwarzKorkhausPairPoint {
     private float pointAY;
 
     @Column
+    private String nameA;
+
+    @Column
     private float pointBX;
 
     @Column
     private float pointBY;
+
+    @Column
+    private String nameB;
 
     @Column
     private boolean required;
