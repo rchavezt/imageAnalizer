@@ -1,5 +1,6 @@
 package com.triple.o.labs.imageAnalizer.dtos;
 
+import com.triple.o.labs.imageAnalizer.enums.UserType;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -10,5 +11,5 @@ public class UserDto {
     private String username;
     private String name;
     private String email;
-    private String role;
+    private UserType userType;
 }

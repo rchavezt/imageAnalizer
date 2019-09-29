@@ -2,15 +2,18 @@ package com.triple.o.labs.imageAnalizer.services.impl;
 
 import com.triple.o.labs.imageAnalizer.daos.UsersDao;
 import com.triple.o.labs.imageAnalizer.dtos.UserDto;
+import com.triple.o.labs.imageAnalizer.dtos.requests.UpdateUserDto;
 import com.triple.o.labs.imageAnalizer.entities.User;
+import com.triple.o.labs.imageAnalizer.enums.UserType;
 import com.triple.o.labs.imageAnalizer.services.UserService;
 import org.springframework.beans.BeanUtils;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -18,36 +21,23 @@ public class UserServiceImpl implements UserService {
     @Autowired
     UsersDao usersDao;
 
-    public List<User> getUsers() {
-        List<User> userList = usersDao.findAll();
-        List<UserDto> userDtoList = new ArrayList<>();
-        for(User user : userList) {
-            UserDto userDto = new UserDto();
-            BeanUtils.copyProperties(user, userDto);
-            userDtoList.add(userDto);
-        }
-        //FIXME
-        //return userDtoList;
-        return null;
+    @Autowired
+    PasswordEncoder passwordEncoder;
+
+    public List<User> getAllUsers() {
+        return usersDao.findAll();
     }
 
     @Override
-    public User addOrUpdateUser(UserDto user) {
-        User newUser;
-        try {
-             Optional<User> existingUser = usersDao.findById(user.getId());
-             newUser = existingUser.get();
-        } catch (Exception e) {
-            //TODO:Add log
-            newUser = new User();
+    public User updateUser(User user, UpdateUserDto updateUserDto) {
+
+        BeanUtils.copyProperties(updateUserDto, user, getNullPropertyNames(updateUserDto));
+
+        if (updateUserDto.getPassword() != null) {
+            user.setPassword(passwordEncoder.encode(updateUserDto.getPassword()));
         }
 
-        BeanUtils.copyProperties(user, newUser);
-        newUser = usersDao.save(newUser);
-        BeanUtils.copyProperties(newUser,user);
-        //FIXME
-        //return user;
-        return null;
+        return usersDao.save(user);
     }
 
     @Override
@@ -59,19 +49,26 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public User deactivateUser(Long id) {
-        UserDto returnUser = new UserDto();
-        Optional<User> userAsOptional = usersDao.findById(id);
-        User user = userAsOptional.get();
+        User user = usersDao.findById(id).get();
         user.setActive(false);
-        user = usersDao.save(user);
-        BeanUtils.copyProperties(user, returnUser);
-        //FIXME
-        //return returnUser;
-        return null;
+        return usersDao.save(user);
     }
 
     @Override
-    public List<User> getLaboratoryUsers() {
-        return usersDao.findByUserLaboratory();
+    public List<User> getUsersbyType(UserType userType) {
+        return usersDao.findByUserType(userType);
+    }
+
+    private static String[] getNullPropertyNames (Object source) {
+        final BeanWrapper src = new BeanWrapperImpl(source);
+        java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
+
+        Set<String> emptyNames = new HashSet<String>();
+        for(java.beans.PropertyDescriptor pd : pds) {
+            Object srcValue = src.getPropertyValue(pd.getName());
+            if (srcValue == null) emptyNames.add(pd.getName());
+        }
+        String[] result = new String[emptyNames.size()];
+        return emptyNames.toArray(result);
     }
 }

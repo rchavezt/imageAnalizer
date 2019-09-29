@@ -36,6 +36,8 @@ public class RoleServiceImpl implements RoleService {
             roleSet.add(roleDao.findByName(RoleName.ROLE_PATIENT_DELETE));
             roleSet.add(roleDao.findByName(RoleName.ROLE_PATIENT_ASSIGN));
         } else if (UserType.LAB == userType) {
+            roleSet.add(roleDao.findByName(RoleName.ROLE_USER_VIEW));
+            roleSet.add(roleDao.findByName(RoleName.ROLE_USER_EDIT));
             roleSet.add(roleDao.findByName(RoleName.ROLE_DOCTOR_LIST));
             roleSet.add(roleDao.findByName(RoleName.ROLE_DOCTOR_VIEW));
             roleSet.add(roleDao.findByName(RoleName.ROLE_DOCTOR_ASSIGN));
@@ -55,6 +57,8 @@ public class RoleServiceImpl implements RoleService {
             roleSet.add(roleDao.findByName(RoleName.ROLE_SCAN_IMAGES_UPLOAD));
             roleSet.add(roleDao.findByName(RoleName.ROLE_SCAN_IMAGES_ASSIGN));
         } else if (UserType.DOCTOR == userType) {
+            roleSet.add(roleDao.findByName(RoleName.ROLE_USER_VIEW));
+            roleSet.add(roleDao.findByName(RoleName.ROLE_USER_EDIT));
             roleSet.add(roleDao.findByName(RoleName.ROLE_PATIENT_LIST));
             roleSet.add(roleDao.findByName(RoleName.ROLE_PATIENT_VIEW));
             roleSet.add(roleDao.findByName(RoleName.ROLE_PATIENT_EDIT));

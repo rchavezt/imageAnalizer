@@ -3,6 +3,7 @@ package com.triple.o.labs.imageAnalizer.services.impl;
 import com.triple.o.labs.imageAnalizer.daos.NotificationDao;
 import com.triple.o.labs.imageAnalizer.entities.Notification;
 import com.triple.o.labs.imageAnalizer.entities.User;
+import com.triple.o.labs.imageAnalizer.enums.UserType;
 import com.triple.o.labs.imageAnalizer.services.NotificationService;
 import com.triple.o.labs.imageAnalizer.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +34,7 @@ public class NotificationServiceImpl implements NotificationService {
     @Override
     public void createNotification(String message) {
 
-        List<User> laboratoryUsers = userService.getLaboratoryUsers();
+        List<User> laboratoryUsers = userService.getUsersbyType(UserType.LAB);
 
         for(User labUser : laboratoryUsers) {
             Notification notification = new Notification();
