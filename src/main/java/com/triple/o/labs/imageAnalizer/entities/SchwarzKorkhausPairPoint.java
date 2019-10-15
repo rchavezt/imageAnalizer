@@ -18,28 +18,22 @@ public class SchwarzKorkhausPairPoint {
     private String name;
 
     @Column
-    private float pointAX;
+    private float pointX;
 
     @Column
-    private float pointAY;
+    private float pointY;
 
     @Column
-    private String nameA;
+    private boolean lineRelation;
 
     @Column
-    private float pointBX;
-
-    @Column
-    private float pointBY;
-
-    @Column
-    private String nameB;
+    private String color;
 
     @Column
     private boolean required;
 
     @Column
-    private String color;
+    private boolean extendedLine;
 
     @ManyToOne
     @JoinColumn(name = "fk_medical_case", nullable = false, updatable = false)

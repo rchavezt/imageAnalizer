@@ -1,6 +1,6 @@
 package com.triple.o.labs.imageAnalizer.services;
 
-import com.triple.o.labs.imageAnalizer.dtos.SchwarzKorkhausDto;
+import com.triple.o.labs.imageAnalizer.dtos.requests.points.SchwarzKorkhausDto;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
 import com.triple.o.labs.imageAnalizer.entities.SchwarzKorkhausPairPoint;
 

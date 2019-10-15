@@ -32,16 +32,24 @@ public class NotificationServiceImpl implements NotificationService {
     }
 
     @Override
-    public void createNotification(String message) {
+    public void createNotification(String message, UserType userType) {
 
-        List<User> laboratoryUsers = userService.getUsersbyType(UserType.LAB);
+        List<User> users = userService.getUsersbyType(userType);
 
-        for(User labUser : laboratoryUsers) {
+        for(User user : users) {
             Notification notification = new Notification();
             notification.setMessage(message);
-            notification.setUser(labUser);
+            notification.setUser(user);
             notificationDao.save(notification);
         }
+    }
+
+    @Override
+    public void createNotification(String message, User user) {
+        Notification notification = new Notification();
+        notification.setMessage(message);
+        notification.setUser(user);
+        notificationDao.save(notification);
     }
 
     @Override

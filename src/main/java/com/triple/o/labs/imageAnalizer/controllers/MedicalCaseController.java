@@ -5,13 +5,12 @@ import com.triple.o.labs.imageAnalizer.config.security.CurrentUser;
 import com.triple.o.labs.imageAnalizer.converter.Converter;
 import com.triple.o.labs.imageAnalizer.dtos.MedicalCaseDto;
 import com.triple.o.labs.imageAnalizer.dtos.PatientDto;
-import com.triple.o.labs.imageAnalizer.dtos.SchwarzKorkhausDto;
-import com.triple.o.labs.imageAnalizer.dtos.requests.MedicalCaseRequestDto;
+import com.triple.o.labs.imageAnalizer.dtos.requests.points.PositionDto;
+import com.triple.o.labs.imageAnalizer.dtos.requests.points.SchwarzKorkhausDto;
+import com.triple.o.labs.imageAnalizer.dtos.image.ImageRequestDto;
+import com.triple.o.labs.imageAnalizer.dtos.requests.InitialMedicalCaseDto;
 import com.triple.o.labs.imageAnalizer.dtos.responses.MedicalCaseResponseDto;
-import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
-import com.triple.o.labs.imageAnalizer.entities.MedicalCaseImage;
-import com.triple.o.labs.imageAnalizer.entities.SchwarzKorkhausPairPoint;
-import com.triple.o.labs.imageAnalizer.entities.User;
+import com.triple.o.labs.imageAnalizer.entities.*;
 import com.triple.o.labs.imageAnalizer.enums.UserType;
 import com.triple.o.labs.imageAnalizer.exceptions.BadRequestException;
 import com.triple.o.labs.imageAnalizer.services.*;
@@ -105,38 +104,54 @@ public class MedicalCaseController {
             throw new BadRequestException("Case you are trying to edit is assigned to another doctor");
         }
 
-        BeanUtils.copyProperties(caseService.editMedicatCase(id, medicalCaseDto, user.getUsername()), medicalCaseDto);
+        BeanUtils.copyProperties(caseService.editMedicalCase(id, medicalCaseDto, user.getUsername()), medicalCaseDto);
         return medicalCaseDto;
     }
 
     @Secured("ROLE_CASES_CREATE")
     @RequestMapping(value = "/new", method = RequestMethod.POST, produces = "application/json")
-    public MedicalCaseResponseDto createMedicalCase(@CurrentUser UserPrincipal userPrincipal, @RequestBody MedicalCaseRequestDto medicalCaseRequestDto) {
+    public MedicalCaseResponseDto createMedicalCase(@CurrentUser UserPrincipal userPrincipal, @RequestBody InitialMedicalCaseDto medicalCaseRequestDto) {
         User user = userService.getUser(userPrincipal.getId());
         if (user.getUserType() != UserType.DOCTOR)
             throw new BadRequestException("User must be Doctor");
 
-        MedicalCaseImage imageCase = scannerImagesService.saveMedicalCaseImage(medicalCaseRequestDto.getPatientId(), medicalCaseRequestDto.getMedicalCaseImages().getUpper(), medicalCaseRequestDto.getMedicalCaseImages().getLower());
+        Stl stl = scannerImagesService.saveSTL(medicalCaseRequestDto.getPatientId(), medicalCaseRequestDto.getStl());
 
-        MedicalCase medicalCase = caseService.createMedicalCase(user, medicalCaseRequestDto, imageCase, user.getUsername());
+        MedicalCase medicalCase = caseService.createMedicalCase(user, medicalCaseRequestDto, stl, user.getUsername());
 
         String notificationMessage = String.format("New case ID: %d for Doctor: %s", medicalCase.getId(), medicalCase.getUser().getName());
-        notificationService.createNotification(notificationMessage);
+        notificationService.createNotification(notificationMessage, UserType.LAB);
 
+        return converter.convertMedicalCase(medicalCase);
+    }
+
+    @Secured("ROLE_CASES_EDIT")
+    @RequestMapping(value = "/add/models/case/{id}", method = RequestMethod.PUT, produces = "application/json")
+    public MedicalCaseResponseDto addModelsToMedicalCase(@CurrentUser UserPrincipal userPrincipal, @RequestBody ImageRequestDto imageRequestDto, @PathVariable Long id) {
+        User user = userService.getUser(userPrincipal.getId());
+        if (user.getUserType() != UserType.LAB)
+            throw new BadRequestException("User must be Laboratory");
+
+        MedicalCase medicalCase = caseService.getCase(id);
+        MedicalCaseImage imageCase = scannerImagesService.saveMedicalCaseImage(medicalCase.getPatient().getId(), imageRequestDto.getUpper(), imageRequestDto.getLower());
+        medicalCase = caseService.addModels(medicalCase, imageCase, user.getUsername());
+
+        String notificationMessage = String.format("Case ID: %d is modeled", medicalCase.getId());
+        notificationService.createNotification(notificationMessage, medicalCase.getUser());
         return converter.convertMedicalCase(medicalCase);
     }
 
     @PreAuthorize("hasRole('ROLE_CASES_CREATE') and hasRole('ROLE_DOCTOR_ASSIGN')")
     @RequestMapping(value = "/new/doctor/{id}", method = RequestMethod.POST, produces = "application/json")
-    public MedicalCaseResponseDto createMedicalCaseToDoctor(@CurrentUser UserPrincipal userPrincipal, @RequestBody MedicalCaseRequestDto medicalCaseRequestDto, @PathVariable Long id) {
+    public MedicalCaseResponseDto createMedicalCaseToDoctor(@CurrentUser UserPrincipal userPrincipal, @RequestBody InitialMedicalCaseDto medicalCaseRequestDto, @PathVariable Long id) {
         User user = userService.getUser(userPrincipal.getId());
         User userDoctor = userService.getUser(id);
         if (user.getUserType() != UserType.LAB)
             throw new BadRequestException("User must be Laboratory");
 
-        MedicalCaseImage imageCase = scannerImagesService.saveMedicalCaseImage(medicalCaseRequestDto.getPatientId(), medicalCaseRequestDto.getMedicalCaseImages().getUpper(), medicalCaseRequestDto.getMedicalCaseImages().getLower());
+        Stl stl = scannerImagesService.saveSTL(medicalCaseRequestDto.getPatientId(), medicalCaseRequestDto.getStl());
 
-        MedicalCase medicalCase = caseService.createMedicalCase(userDoctor, medicalCaseRequestDto, imageCase, user.getUsername());
+        MedicalCase medicalCase = caseService.createMedicalCase(userDoctor, medicalCaseRequestDto, stl, user.getUsername());
         return converter.convertMedicalCase(medicalCase);
     }
 
@@ -155,8 +170,15 @@ public class MedicalCaseController {
         for (SchwarzKorkhausPairPoint schwarzKorkhausPairPoint : pairPoints){
             SchwarzKorkhausDto schwarzKorkhausDto = new SchwarzKorkhausDto();
             BeanUtils.copyProperties(schwarzKorkhausPairPoint, schwarzKorkhausDto);
+            PositionDto positionDto = new PositionDto();
+            positionDto.setX(schwarzKorkhausPairPoint.getPointX());
+            positionDto.setY(schwarzKorkhausPairPoint.getPointY());
+            schwarzKorkhausDto.setPosition(positionDto);
             response.add(schwarzKorkhausDto);
         }
+
+        String notificationMessage = String.format("Case ID: %d is analyzed", medicalCase.getId());
+        notificationService.createNotification(notificationMessage, medicalCase.getUser());
         return response;
     }
 

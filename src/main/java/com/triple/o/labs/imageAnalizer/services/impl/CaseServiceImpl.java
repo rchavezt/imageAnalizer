@@ -4,10 +4,7 @@ import com.triple.o.labs.imageAnalizer.daos.CasesDao;
 import com.triple.o.labs.imageAnalizer.daos.UsersDao;
 import com.triple.o.labs.imageAnalizer.dtos.MedicalCaseDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.MedicalCaseRequestDto;
-import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
-import com.triple.o.labs.imageAnalizer.entities.MedicalCaseImage;
-import com.triple.o.labs.imageAnalizer.entities.Patient;
-import com.triple.o.labs.imageAnalizer.entities.User;
+import com.triple.o.labs.imageAnalizer.entities.*;
 import com.triple.o.labs.imageAnalizer.enums.Status;
 import com.triple.o.labs.imageAnalizer.services.CaseService;
 import com.triple.o.labs.imageAnalizer.services.PatientService;
@@ -46,7 +43,15 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
-    public MedicalCase editMedicatCase(Long id, MedicalCaseDto medicalCaseDto, String userEditing) {
+    public MedicalCase addModels(MedicalCase medicalCase, MedicalCaseImage medicalCaseImage, String userEditing) {
+        medicalCase.setMedicalCaseImage(medicalCaseImage);
+        medicalCase.setStatus(Status.MODELED);
+        medicalCase.setUpdatedBy(userEditing);
+        return casesDao.save(medicalCase);
+    }
+
+    @Override
+    public MedicalCase editMedicalCase(Long id, MedicalCaseDto medicalCaseDto, String userEditing) {
         MedicalCase medicalCase = getCase(id);
         BeanUtils.copyProperties(medicalCaseDto, medicalCase);
         medicalCase.setUpdatedBy(userEditing);
@@ -54,14 +59,14 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
-    public MedicalCase createMedicalCase(User user, MedicalCaseRequestDto medicalCaseRequestDto, MedicalCaseImage medicalCaseImage, String userCreating) {
+    public MedicalCase createMedicalCase(User user, MedicalCaseRequestDto medicalCaseRequestDto, Stl stl, String userCreating) {
         MedicalCase medicalCase = new MedicalCase();
         BeanUtils.copyProperties(medicalCaseRequestDto, medicalCase);
         Patient patient = patientService.getPatient(medicalCaseRequestDto.getPatientId());
         medicalCase.setPatient(patient);
         medicalCase.setUser(user);
         medicalCase.setStatus(Status.NEW);
-        medicalCase.setMedicalCaseImage(medicalCaseImage);
+        medicalCase.setStl(stl);
         medicalCase.setCreatedBy(userCreating);
         medicalCase.setUpdatedBy(userCreating);
         return casesDao.save(medicalCase);

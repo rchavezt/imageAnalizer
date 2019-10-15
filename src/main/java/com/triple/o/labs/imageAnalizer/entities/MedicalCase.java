@@ -33,6 +33,9 @@ public class MedicalCase extends UserTrackingEntity{
     private User user;
 
     @OneToOne
+    private Stl stl;
+
+    @OneToOne
     private MedicalCaseImage medicalCaseImage;
 
     @OneToOne

@@ -2,7 +2,7 @@ package com.triple.o.labs.imageAnalizer.converter.impl;
 
 import com.triple.o.labs.imageAnalizer.converter.Converter;
 import com.triple.o.labs.imageAnalizer.dtos.PatientDto;
-import com.triple.o.labs.imageAnalizer.dtos.SchwarzKorkhausDto;
+import com.triple.o.labs.imageAnalizer.dtos.requests.points.SchwarzKorkhausDto;
 import com.triple.o.labs.imageAnalizer.dtos.responses.MedicalCaseResponseDto;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
 import com.triple.o.labs.imageAnalizer.entities.SchwarzKorkhausPairPoint;
