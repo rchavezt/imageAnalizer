@@ -15,7 +15,13 @@ public class Stl extends CommonEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
+    private String fileName;
+
+    @Column
+    private String fileType;
+
     @Lob
     @Column
-    private byte[] base64image;
+    private byte[] base64file;
 }

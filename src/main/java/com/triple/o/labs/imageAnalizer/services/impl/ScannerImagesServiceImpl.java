@@ -86,11 +86,4 @@ public class ScannerImagesServiceImpl implements ScannerImagesService {
         medicalCaseImage.setBase64image(imageMerged);
         return medicalCaseImageDao.save(medicalCaseImage);
     }
-
-    @Override
-    public Stl saveSTL(Long idPatient, byte[] stl) {
-        Stl stlEntity = new Stl();
-        stlEntity.setBase64image(stl);
-        return stlDao.save(stlEntity);
-    }
 }

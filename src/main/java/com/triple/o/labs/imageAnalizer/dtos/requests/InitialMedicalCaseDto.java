@@ -6,5 +6,5 @@ import lombok.Setter;
 @Getter
 @Setter
 public class InitialMedicalCaseDto extends MedicalCaseRequestDto {
-    byte[] stl;
+    Long stlId;
 }

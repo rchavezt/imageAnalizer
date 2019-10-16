@@ -6,5 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StlResponseDto {
-    byte[] image;
+    String fileName;
+    boolean success;
 }

@@ -45,6 +45,9 @@ public class MedicalCaseController {
     private SchwarzKorkhausPairPointService schwarzKorkhausPairPointService;
 
     @Autowired
+    private StlService stlService;
+
+    @Autowired
     private Converter converter;
 
     @Secured("ROLE_CASES_LIST")
@@ -115,7 +118,7 @@ public class MedicalCaseController {
         if (user.getUserType() != UserType.DOCTOR)
             throw new BadRequestException("User must be Doctor");
 
-        Stl stl = scannerImagesService.saveSTL(medicalCaseRequestDto.getPatientId(), medicalCaseRequestDto.getStl());
+        Stl stl = stlService.getFile(medicalCaseRequestDto.getStlId());
 
         MedicalCase medicalCase = caseService.createMedicalCase(user, medicalCaseRequestDto, stl, user.getUsername());
 
@@ -149,7 +152,7 @@ public class MedicalCaseController {
         if (user.getUserType() != UserType.LAB)
             throw new BadRequestException("User must be Laboratory");
 
-        Stl stl = scannerImagesService.saveSTL(medicalCaseRequestDto.getPatientId(), medicalCaseRequestDto.getStl());
+        Stl stl = stlService.getFile(medicalCaseRequestDto.getStlId());
 
         MedicalCase medicalCase = caseService.createMedicalCase(userDoctor, medicalCaseRequestDto, stl, user.getUsername());
         return converter.convertMedicalCase(medicalCase);

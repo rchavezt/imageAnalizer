@@ -2,6 +2,10 @@
 ## Setting up
 The application needs a MySql instance. Choose the flavor you want (docker, vagrant, local, reagular VM) and install it.
 
+Run this command on MySql:
+
+`SET GLOBAL max_allowed_packet=1073741824;`
+
 Once you have MySql Server running, update the values as needed on the application.properties file:
 
 ```

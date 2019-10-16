@@ -4,21 +4,24 @@ import com.triple.o.labs.imageAnalizer.config.UserPrincipal;
 import com.triple.o.labs.imageAnalizer.config.security.CurrentUser;
 import com.triple.o.labs.imageAnalizer.dtos.image.StlResponseDto;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
+import com.triple.o.labs.imageAnalizer.entities.Stl;
 import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.enums.UserType;
 import com.triple.o.labs.imageAnalizer.exceptions.BadRequestException;
 import com.triple.o.labs.imageAnalizer.services.CaseService;
 import com.triple.o.labs.imageAnalizer.services.ScannerImagesService;
+import com.triple.o.labs.imageAnalizer.services.StlService;
 import com.triple.o.labs.imageAnalizer.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.annotation.Secured;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import javax.print.DocFlavor;
-import java.util.Set;
 
 @RestController
 @RequestMapping(value = "/image", headers = "Authorization")
@@ -28,22 +31,34 @@ public class ScannerImagesController {
     private CaseService caseService;
 
     @Autowired
-    private ScannerImagesService scannerImagesService;
+    private StlService stlService;
 
     @Autowired
     private UserService userService;
 
     @Secured("ROLE_SCAN_IMAGES_VIEW")
     @RequestMapping(value = "/stl/case/{id}", method = RequestMethod.GET, produces = "application/json")
-    public StlResponseDto getStl(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id){
+    public ResponseEntity<Resource> getStl(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id){
         User user = userService.getUser(userPrincipal.getId());
         if (user.getUserType() != UserType.LAB)
             throw new BadRequestException("User must be Laboratory");
 
         MedicalCase medicalCase = caseService.getCase(id);
 
+        return ResponseEntity.ok().contentType(MediaType.parseMediaType(medicalCase.getStl().getFileType()))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + medicalCase.getStl().getFileName() + "\"")
+                .body(new ByteArrayResource(medicalCase.getStl().getBase64file()));
+    }
+
+    @Secured("ROLE_SCAN_IMAGES_UPLOAD")
+    @RequestMapping(value = "/stl/add", method = RequestMethod.POST, produces = "application/json")
+    public StlResponseDto addStl(@CurrentUser UserPrincipal userPrincipal, @RequestParam("file") MultipartFile file){
+
+        Stl stl = stlService.storeFile(file);
+
         StlResponseDto stlResponseDto = new StlResponseDto();
-        stlResponseDto.setImage(medicalCase.getStl().getBase64image());
+        stlResponseDto.setFileName(stl.getFileName());
+        stlResponseDto.setSuccess(true);
 
         return stlResponseDto;
     }
