@@ -6,6 +6,6 @@ import lombok.Setter;
 @Getter
 @Setter
 public class StlResponseDto {
-    String fileName;
+    Long id;
     boolean success;
 }

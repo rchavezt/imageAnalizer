@@ -57,7 +57,7 @@ public class ScannerImagesController {
         Stl stl = stlService.storeFile(file);
 
         StlResponseDto stlResponseDto = new StlResponseDto();
-        stlResponseDto.setFileName(stl.getFileName());
+        stlResponseDto.setId(stl.getId());
         stlResponseDto.setSuccess(true);
 
         return stlResponseDto;
