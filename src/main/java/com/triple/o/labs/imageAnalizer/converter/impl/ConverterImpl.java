@@ -19,7 +19,6 @@ public class ConverterImpl implements Converter {
         BeanUtils.copyProperties(medicalCase, medicalCaseResponseDto);
         medicalCaseResponseDto.setPairPoints(new ArrayList<>());
         medicalCaseResponseDto.setDoctorFullName(medicalCase.getUser().getName());
-        medicalCaseResponseDto.setMedicalCaseImage(medicalCase.getMedicalCaseImage().getBase64image());
 
         PatientDto patientDto = new PatientDto();
         BeanUtils.copyProperties(medicalCase.getPatient(), patientDto);
