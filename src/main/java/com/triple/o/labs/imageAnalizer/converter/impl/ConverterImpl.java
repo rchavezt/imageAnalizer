@@ -23,6 +23,9 @@ public class ConverterImpl implements Converter {
         PatientDto patientDto = new PatientDto();
         BeanUtils.copyProperties(medicalCase.getPatient(), patientDto);
         medicalCaseResponseDto.setPatient(patientDto);
+        if (medicalCase.getMedicalCaseImage() != null) {
+            medicalCaseResponseDto.setMedicalCaseImage(medicalCase.getMedicalCaseImage().getBase64image());
+        }
 
         if(medicalCase.getPairPoints() != null) {
             for (SchwarzKorkhausPairPoint schwarzKorkhausPairPoint : medicalCase.getPairPoints()) {
