@@ -4,11 +4,13 @@ import com.triple.o.labs.imageAnalizer.daos.NotificationDao;
 import com.triple.o.labs.imageAnalizer.entities.Notification;
 import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.enums.UserType;
+import com.triple.o.labs.imageAnalizer.services.EmailService;
 import com.triple.o.labs.imageAnalizer.services.NotificationService;
 import com.triple.o.labs.imageAnalizer.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.mail.AuthenticationFailedException;
 import java.util.List;
 
 @Service
@@ -19,6 +21,9 @@ public class NotificationServiceImpl implements NotificationService {
 
     @Autowired
     private UserService userService;
+
+    @Autowired
+    private EmailService emailService;
 
     @Override
     public Notification getNotification(Long id) {
@@ -41,6 +46,8 @@ public class NotificationServiceImpl implements NotificationService {
             notification.setMessage(message);
             notification.setUser(user);
             notificationDao.save(notification);
+
+            emailService.sendEmail(notification);
         }
     }
 
@@ -50,6 +57,8 @@ public class NotificationServiceImpl implements NotificationService {
         notification.setMessage(message);
         notification.setUser(user);
         notificationDao.save(notification);
+
+        emailService.sendEmail(notification);
     }
 
     @Override
