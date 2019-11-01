@@ -37,7 +37,7 @@ public class ScannerImagesController {
     private UserService userService;
 
     @Secured("ROLE_SCAN_IMAGES_VIEW")
-    @RequestMapping(value = "/stl/case/{id}", method = RequestMethod.GET, produces = "application/json")
+    @RequestMapping(value = "/stl/case/{id}", method = RequestMethod.GET)
     public ResponseEntity<Resource> getStl(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id){
         User user = userService.getUser(userPrincipal.getId());
         if (user.getUserType() != UserType.LAB)
