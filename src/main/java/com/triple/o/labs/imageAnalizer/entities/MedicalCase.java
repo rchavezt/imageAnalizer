@@ -39,7 +39,7 @@ public class MedicalCase extends UserTrackingEntity{
     private MedicalCaseImage medicalCaseImage;
 
     @OneToOne
-    private MedicalCaseImage medicalCaseImageAnalyzed;
+    private Snapshot snapshotImageAnalyzed;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "medicalCase")
     private List<SchwarzKorkhausPairPoint> pairPoints;

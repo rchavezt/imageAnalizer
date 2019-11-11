@@ -1,6 +1,5 @@
 package com.triple.o.labs.imageAnalizer.services;
 
-import com.triple.o.labs.imageAnalizer.dtos.UserDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.UpdateUserDto;
 import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.enums.UserType;

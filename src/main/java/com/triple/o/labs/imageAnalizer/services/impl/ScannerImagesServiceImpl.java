@@ -3,14 +3,11 @@ package com.triple.o.labs.imageAnalizer.services.impl;
 import com.triple.o.labs.imageAnalizer.daos.MedicalCaseImageDao;
 import com.triple.o.labs.imageAnalizer.daos.StlDao;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCaseImage;
-import com.triple.o.labs.imageAnalizer.entities.Stl;
-import com.triple.o.labs.imageAnalizer.exceptions.BadRequestException;
 import com.triple.o.labs.imageAnalizer.services.ScannerImagesService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
-import javax.persistence.PersistenceException;
 import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;

@@ -10,7 +10,6 @@ import com.triple.o.labs.imageAnalizer.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.mail.AuthenticationFailedException;
 import java.util.List;
 
 @Service

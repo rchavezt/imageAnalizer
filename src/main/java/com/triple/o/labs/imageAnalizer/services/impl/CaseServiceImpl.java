@@ -51,6 +51,13 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
+    public MedicalCase addSnapshot(MedicalCase medicalCase, Snapshot snapshotImageAnalyzed, String userEditing) {
+        medicalCase.setSnapshotImageAnalyzed(snapshotImageAnalyzed);
+        medicalCase.setUpdatedBy(userEditing);
+        return casesDao.save(medicalCase);
+    }
+
+    @Override
     public MedicalCase editMedicalCase(Long id, MedicalCaseDto medicalCaseDto, String userEditing) {
         MedicalCase medicalCase = getCase(id);
         BeanUtils.copyProperties(medicalCaseDto, medicalCase);

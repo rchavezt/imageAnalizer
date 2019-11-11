@@ -5,7 +5,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class StlResponseDto {
+public class ImageStatusResponseDto {
     Long id;
     boolean success;
 }

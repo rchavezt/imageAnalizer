@@ -2,14 +2,15 @@ package com.triple.o.labs.imageAnalizer.controllers;
 
 import com.triple.o.labs.imageAnalizer.config.UserPrincipal;
 import com.triple.o.labs.imageAnalizer.config.security.CurrentUser;
-import com.triple.o.labs.imageAnalizer.dtos.image.StlResponseDto;
+import com.triple.o.labs.imageAnalizer.dtos.image.ImageStatusResponseDto;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
+import com.triple.o.labs.imageAnalizer.entities.Snapshot;
 import com.triple.o.labs.imageAnalizer.entities.Stl;
 import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.enums.UserType;
 import com.triple.o.labs.imageAnalizer.exceptions.BadRequestException;
 import com.triple.o.labs.imageAnalizer.services.CaseService;
-import com.triple.o.labs.imageAnalizer.services.ScannerImagesService;
+import com.triple.o.labs.imageAnalizer.services.SnapshotService;
 import com.triple.o.labs.imageAnalizer.services.StlService;
 import com.triple.o.labs.imageAnalizer.services.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,14 +35,18 @@ public class ScannerImagesController {
     private StlService stlService;
 
     @Autowired
+    private SnapshotService snapshotService;
+
+    @Autowired
     private UserService userService;
 
     @Secured("ROLE_SCAN_IMAGES_VIEW")
     @RequestMapping(value = "/stl/case/{id}", method = RequestMethod.GET)
     public ResponseEntity<Resource> getStl(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id){
         User user = userService.getUser(userPrincipal.getId());
-        if (user.getUserType() != UserType.LAB)
+        if (user.getUserType() != UserType.LAB) {
             throw new BadRequestException("User must be Laboratory");
+        }
 
         MedicalCase medicalCase = caseService.getCase(id);
 
@@ -52,14 +57,37 @@ public class ScannerImagesController {
 
     @Secured("ROLE_SCAN_IMAGES_UPLOAD")
     @RequestMapping(value = "/stl/add", method = RequestMethod.POST, produces = "application/json")
-    public StlResponseDto addStl(@CurrentUser UserPrincipal userPrincipal, @RequestParam("file") MultipartFile file){
+    public ImageStatusResponseDto addStl(@CurrentUser UserPrincipal userPrincipal, @RequestParam("file") MultipartFile file){
 
         Stl stl = stlService.storeFile(file);
 
-        StlResponseDto stlResponseDto = new StlResponseDto();
-        stlResponseDto.setId(stl.getId());
-        stlResponseDto.setSuccess(true);
+        ImageStatusResponseDto imageStatusResponseDto = new ImageStatusResponseDto();
+        imageStatusResponseDto.setId(stl.getId());
+        imageStatusResponseDto.setSuccess(true);
 
-        return stlResponseDto;
+        return imageStatusResponseDto;
+    }
+
+    @Secured("ROLE_SCAN_IMAGES_UPLOAD")
+    @RequestMapping(value = "/snapshot/add/case/{id}", method = RequestMethod.POST, produces = "application/json")
+    public ImageStatusResponseDto addSnapshot(@CurrentUser UserPrincipal userPrincipal, @RequestParam("file") MultipartFile file, @PathVariable Long id){
+        User user = userService.getUser(userPrincipal.getId());
+        if (user.getUserType() != UserType.LAB) {
+            throw new BadRequestException("User must be Laboratory");
+        }
+        Snapshot snapshot = snapshotService.storeFile(file);
+
+        ImageStatusResponseDto imageStatusResponseDto = new ImageStatusResponseDto();
+        imageStatusResponseDto.setId(snapshot.getId());
+
+        try {
+            MedicalCase medicalCase = caseService.getCase(id);
+            caseService.addSnapshot(medicalCase, snapshot, user.getUsername());
+        } catch (Exception e) {
+            throw new BadRequestException("Error uploading snapshot", e);
+        }
+
+        imageStatusResponseDto.setSuccess(true);
+        return imageStatusResponseDto;
     }
 }

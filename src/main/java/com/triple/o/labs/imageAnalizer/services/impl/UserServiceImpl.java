@@ -1,7 +1,6 @@
 package com.triple.o.labs.imageAnalizer.services.impl;
 
 import com.triple.o.labs.imageAnalizer.daos.UsersDao;
-import com.triple.o.labs.imageAnalizer.dtos.UserDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.UpdateUserDto;
 import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.enums.UserType;
@@ -13,7 +12,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
+import java.util.Set;
 
 @Service
 public class UserServiceImpl implements UserService {
