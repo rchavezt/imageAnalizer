@@ -2,6 +2,7 @@ package com.triple.o.labs.imageAnalizer.converter.impl;
 
 import com.triple.o.labs.imageAnalizer.converter.Converter;
 import com.triple.o.labs.imageAnalizer.dtos.PatientDto;
+import com.triple.o.labs.imageAnalizer.dtos.requests.points.PositionDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.points.SchwarzKorkhausDto;
 import com.triple.o.labs.imageAnalizer.dtos.responses.MedicalCaseResponseDto;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
@@ -30,7 +31,11 @@ public class ConverterImpl implements Converter {
         if(medicalCase.getPairPoints() != null) {
             for (SchwarzKorkhausPairPoint schwarzKorkhausPairPoint : medicalCase.getPairPoints()) {
                 SchwarzKorkhausDto schwarzKorkhausDto = new SchwarzKorkhausDto();
+                PositionDto positionDto = new PositionDto();
                 BeanUtils.copyProperties(schwarzKorkhausPairPoint, schwarzKorkhausDto);
+                positionDto.setX(schwarzKorkhausPairPoint.getPointX());
+                positionDto.setY(schwarzKorkhausPairPoint.getPointY());
+                schwarzKorkhausDto.setPosition(positionDto);
                 medicalCaseResponseDto.getPairPoints().add(schwarzKorkhausDto);
             }
         }
