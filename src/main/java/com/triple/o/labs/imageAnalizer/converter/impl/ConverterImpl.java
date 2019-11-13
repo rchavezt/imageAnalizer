@@ -5,6 +5,7 @@ import com.triple.o.labs.imageAnalizer.dtos.PatientDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.points.PositionDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.points.SchwarzKorkhausDto;
 import com.triple.o.labs.imageAnalizer.dtos.responses.MedicalCaseResponseDto;
+import com.triple.o.labs.imageAnalizer.dtos.responses.MedicalCaseSimpleResponseDto;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
 import com.triple.o.labs.imageAnalizer.entities.SchwarzKorkhausPairPoint;
 import org.springframework.beans.BeanUtils;
@@ -41,5 +42,18 @@ public class ConverterImpl implements Converter {
         }
 
         return medicalCaseResponseDto;
+    }
+
+    @Override
+    public MedicalCaseSimpleResponseDto convertSimpleMedicalCase(MedicalCase medicalCase) {
+        MedicalCaseSimpleResponseDto medicalCaseSimpleResponseDto = new MedicalCaseSimpleResponseDto();
+        BeanUtils.copyProperties(medicalCase, medicalCaseSimpleResponseDto);
+        medicalCaseSimpleResponseDto.setDoctorFullName(medicalCase.getUser().getName());
+
+        PatientDto patientDto = new PatientDto();
+        BeanUtils.copyProperties(medicalCase.getPatient(), patientDto);
+        medicalCaseSimpleResponseDto.setPatient(patientDto);
+
+        return medicalCaseSimpleResponseDto;
     }
 }

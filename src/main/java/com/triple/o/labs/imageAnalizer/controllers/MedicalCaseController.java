@@ -10,6 +10,7 @@ import com.triple.o.labs.imageAnalizer.dtos.requests.InitialMedicalCaseDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.points.PositionDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.points.SchwarzKorkhausDto;
 import com.triple.o.labs.imageAnalizer.dtos.responses.MedicalCaseResponseDto;
+import com.triple.o.labs.imageAnalizer.dtos.responses.MedicalCaseSimpleResponseDto;
 import com.triple.o.labs.imageAnalizer.entities.*;
 import com.triple.o.labs.imageAnalizer.enums.UserType;
 import com.triple.o.labs.imageAnalizer.exceptions.BadRequestException;
@@ -52,7 +53,7 @@ public class MedicalCaseController {
 
     @Secured("ROLE_CASES_LIST")
     @RequestMapping(value = "/all", method = RequestMethod.GET, produces = "application/json")
-    public Set<MedicalCaseResponseDto> getMedicalCases(@CurrentUser UserPrincipal userPrincipal){
+    public List<MedicalCaseSimpleResponseDto> getMedicalCases(@CurrentUser UserPrincipal userPrincipal){
         User user = userService.getUser(userPrincipal.getId());
 
         if (user.getUserType() != UserType.DOCTOR && user.getUserType() != UserType.LAB)
@@ -65,15 +66,9 @@ public class MedicalCaseController {
         } else {
             medicalCases = caseService.getCases();
         }
-        Set<MedicalCaseResponseDto> response = new HashSet<>();
+        List<MedicalCaseSimpleResponseDto> response = new ArrayList<>();
         for (MedicalCase medicalCase : medicalCases){
-            MedicalCaseResponseDto medicalCaseResponse = new MedicalCaseResponseDto();
-            BeanUtils.copyProperties(medicalCase, medicalCaseResponse);
-            PatientDto patientDto = new PatientDto();
-            BeanUtils.copyProperties(medicalCase.getPatient(), patientDto);
-            medicalCaseResponse.setPatient(patientDto);
-            medicalCaseResponse.setDoctorFullName(user.getName());
-            response.add(medicalCaseResponse);
+            response.add(converter.convertSimpleMedicalCase(medicalCase));
         }
         return response;
     }
