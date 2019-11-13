@@ -4,8 +4,9 @@ import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
 import com.triple.o.labs.imageAnalizer.entities.User;
 import org.springframework.data.repository.CrudRepository;
 
-import java.util.Set;
+import java.util.List;
 
 public interface CasesDao extends CrudRepository<MedicalCase, Long> {
-    Set<MedicalCase> findByUser(User user);
+    List<MedicalCase> findByUserOrderByDateUpdatedDesc(User user);
+    List<MedicalCase> findAllByOrderByDateUpdatedDesc();
 }

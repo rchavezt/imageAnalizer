@@ -10,7 +10,7 @@ import java.util.Set;
 public interface CaseService {
     List<MedicalCase> getCases();
     MedicalCase getCase(Long id);
-    Set<MedicalCase> getCasesByDoctor(User user);
+    List<MedicalCase> getCasesByDoctor(User user);
     MedicalCase addModels(MedicalCase medicalCase, MedicalCaseImage medicalCaseImage, String userEditing);
     MedicalCase addSnapshot(MedicalCase medicalCase, Snapshot snapshotImageAnalyzed, String userEditing);
     MedicalCase editMedicalCase(Long id, MedicalCaseDto medicalCaseDto, String userEditing);

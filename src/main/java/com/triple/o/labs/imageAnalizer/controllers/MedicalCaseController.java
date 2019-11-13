@@ -62,7 +62,7 @@ public class MedicalCaseController {
         List<MedicalCase> medicalCases;
 
         if (user.getUserType() == UserType.DOCTOR) {
-            medicalCases = new ArrayList<>(caseService.getCasesByDoctor(user));
+            medicalCases = caseService.getCasesByDoctor(user);
         } else {
             medicalCases = caseService.getCases();
         }

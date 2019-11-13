@@ -29,7 +29,7 @@ public class CaseServiceImpl implements CaseService {
 
     @Override
     public List<MedicalCase> getCases() {
-        return (List<MedicalCase>) casesDao.findAll();
+        return casesDao.findAllByOrderByDateUpdatedDesc();
     }
 
     @Override
@@ -38,8 +38,8 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
-    public Set<MedicalCase> getCasesByDoctor(User user) {
-        return casesDao.findByUser(user);
+    public List<MedicalCase> getCasesByDoctor(User user) {
+        return casesDao.findByUserOrderByDateUpdatedDesc(user);
     }
 
     @Override
