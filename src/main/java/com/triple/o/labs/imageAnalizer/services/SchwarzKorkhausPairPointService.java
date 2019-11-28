@@ -8,5 +8,4 @@ import java.util.List;
 
 public interface SchwarzKorkhausPairPointService {
     List<SchwarzKorkhausPairPoint> savePairPoints(MedicalCase medicalCase, List<SchwarzKorkhausDto> schwarzKorkhausDtoList);
-    void removePairPoints(List<SchwarzKorkhausPairPoint> pairPoints);
 }

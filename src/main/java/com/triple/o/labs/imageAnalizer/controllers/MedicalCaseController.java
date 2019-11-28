@@ -163,7 +163,7 @@ public class MedicalCaseController {
         MedicalCase medicalCase = caseService.getCase(id);
 
         if (!medicalCase.getPairPoints().isEmpty()) {
-            schwarzKorkhausPairPointService.removePairPoints(medicalCase.getPairPoints());
+            caseService.removePairPoints(medicalCase);
         }
 
         List<SchwarzKorkhausPairPoint> pairPoints = schwarzKorkhausPairPointService.savePairPoints(medicalCase, request);

@@ -8,7 +8,7 @@ import javax.persistence.*;
 @Entity
 @Getter
 @Setter
-public class SchwarzKorkhausPairPoint extends CommonEntity {
+public class SchwarzKorkhausPairPoint {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

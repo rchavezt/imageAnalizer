@@ -15,4 +15,5 @@ public interface CaseService {
     MedicalCase addSnapshot(MedicalCase medicalCase, Snapshot snapshotImageAnalyzed, String userEditing);
     MedicalCase editMedicalCase(Long id, MedicalCaseDto medicalCaseDto, String userEditing);
     MedicalCase createMedicalCase(User user, MedicalCaseRequestDto medicalCase, Stl stl, String userCreating);
+    MedicalCase removePairPoints(MedicalCase medicalCase);
 }
