@@ -42,4 +42,12 @@ public class SchwarzKorkhausPairPointServiceImpl implements SchwarzKorkhausPairP
 
         return pointList;
     }
+
+    @Override
+    public void removePairPoints(List<SchwarzKorkhausPairPoint> pairPoints) {
+        pairPoints.forEach(e -> e.setActive(false));
+        schwarzKorkhausPairPointDao.saveAll(pairPoints);
+    }
+
+
 }
