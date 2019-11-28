@@ -35,6 +35,9 @@ public class SchwarzKorkhausPairPoint {
     @Column
     private boolean extendedLine;
 
+    @Column
+    private int sort;
+
     @ManyToOne
     @JoinColumn(name = "fk_medical_case")
     private MedicalCase medicalCase;

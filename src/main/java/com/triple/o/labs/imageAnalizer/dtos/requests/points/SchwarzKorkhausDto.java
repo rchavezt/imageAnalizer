@@ -12,4 +12,5 @@ public class SchwarzKorkhausDto {
     private String color;
     private boolean required;
     private boolean extendedLine;
+    private int sort;
 }

@@ -22,10 +22,7 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @RestController
 @RequestMapping(value = "/case", headers = "Authorization")
@@ -179,6 +176,8 @@ public class MedicalCaseController {
             schwarzKorkhausDto.setPosition(positionDto);
             response.add(schwarzKorkhausDto);
         }
+
+        response.sort(Comparator.comparing(SchwarzKorkhausDto::getSort));
 
         String notificationMessage = String.format("Case ID: %d is analyzed", medicalCase.getId());
         notificationService.createNotification(notificationMessage, medicalCase.getUser());
