@@ -78,10 +78,4 @@ public class CaseServiceImpl implements CaseService {
         medicalCase.setUpdatedBy(userCreating);
         return casesDao.save(medicalCase);
     }
-
-    @Override
-    public MedicalCase removePairPoints(MedicalCase medicalCase) {
-        medicalCase.setPairPoints(null);
-        return casesDao.save(medicalCase);
-    }
 }

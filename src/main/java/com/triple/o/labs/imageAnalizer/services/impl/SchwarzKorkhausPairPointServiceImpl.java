@@ -43,4 +43,16 @@ public class SchwarzKorkhausPairPointServiceImpl implements SchwarzKorkhausPairP
         return pointList;
     }
 
+    @Override
+    public void removePairPoints(MedicalCase medicalCase) {
+        List<SchwarzKorkhausPairPoint> pairPoints = medicalCase.getPairPoints();
+        pairPoints.forEach(e -> {
+            e.setMedicalCase(null);
+            schwarzKorkhausPairPointDao.save(e);
+        });
+        medicalCase.setPairPoints(null);
+        casesDao.save(medicalCase);
+        schwarzKorkhausPairPointDao.deleteAll(pairPoints);
+    }
+
 }
