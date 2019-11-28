@@ -17,5 +17,6 @@ public class MedicalCaseResponseDto {
     private PatientDto patient;
     private Status status;
     private byte[] medicalCaseImage;
+    private byte[] medicalCaseImageAnalyzed;
     private List<SchwarzKorkhausDto> pairPoints;
 }
