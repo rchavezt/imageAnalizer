@@ -1,9 +1,11 @@
 package com.triple.o.labs.imageAnalizer.entities;
 
+import com.triple.o.labs.imageAnalizer.enums.AnalysisType;
 import com.triple.o.labs.imageAnalizer.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
+import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.List;
@@ -24,6 +26,11 @@ public class MedicalCase extends UserTrackingEntity{
     @Column
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    @Nullable
+    private AnalysisType analysisType;
 
     @ManyToOne
     @JoinColumn(name="patient_id", nullable=false)

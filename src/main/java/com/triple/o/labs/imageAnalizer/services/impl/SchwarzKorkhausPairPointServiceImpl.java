@@ -5,6 +5,7 @@ import com.triple.o.labs.imageAnalizer.daos.SchwarzKorkhausPairPointDao;
 import com.triple.o.labs.imageAnalizer.dtos.requests.points.SchwarzKorkhausDto;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
 import com.triple.o.labs.imageAnalizer.entities.SchwarzKorkhausPairPoint;
+import com.triple.o.labs.imageAnalizer.enums.AnalysisType;
 import com.triple.o.labs.imageAnalizer.enums.Status;
 import com.triple.o.labs.imageAnalizer.services.SchwarzKorkhausPairPointService;
 import org.springframework.beans.BeanUtils;
@@ -24,7 +25,7 @@ public class SchwarzKorkhausPairPointServiceImpl implements SchwarzKorkhausPairP
     private CasesDao casesDao;
 
     @Override
-    public List<SchwarzKorkhausPairPoint> savePairPoints(MedicalCase medicalCase, List<SchwarzKorkhausDto> schwarzKorkhausDtoList) {
+    public List<SchwarzKorkhausPairPoint> savePairPoints(MedicalCase medicalCase, List<SchwarzKorkhausDto> schwarzKorkhausDtoList, AnalysisType analysisType) {
         List<SchwarzKorkhausPairPoint> pointList = new ArrayList<>();
 
         for(SchwarzKorkhausDto schwarzKorkhausDto : schwarzKorkhausDtoList){
@@ -37,6 +38,7 @@ public class SchwarzKorkhausPairPointServiceImpl implements SchwarzKorkhausPairP
         }
 
         medicalCase.setPairPoints(pointList);
+        medicalCase.setAnalysisType(analysisType);
         medicalCase.setStatus(Status.ANALYZED);
         casesDao.save(medicalCase);
 

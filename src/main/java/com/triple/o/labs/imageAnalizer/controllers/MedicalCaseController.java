@@ -12,6 +12,7 @@ import com.triple.o.labs.imageAnalizer.dtos.requests.points.SchwarzKorkhausDto;
 import com.triple.o.labs.imageAnalizer.dtos.responses.MedicalCaseResponseDto;
 import com.triple.o.labs.imageAnalizer.dtos.responses.MedicalCaseSimpleResponseDto;
 import com.triple.o.labs.imageAnalizer.entities.*;
+import com.triple.o.labs.imageAnalizer.enums.AnalysisType;
 import com.triple.o.labs.imageAnalizer.enums.UserType;
 import com.triple.o.labs.imageAnalizer.exceptions.BadRequestException;
 import com.triple.o.labs.imageAnalizer.services.*;
@@ -154,8 +155,8 @@ public class MedicalCaseController {
     }
 
     @Secured("ROLE_CASES_EDIT")
-    @RequestMapping(value = "/add/schwarzKorkhausPairPoints/{id}", method = RequestMethod.PUT, produces = "application/json")
-    public List<SchwarzKorkhausDto> setSchwarzKorkhausPairPoints(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id, @RequestBody List<SchwarzKorkhausDto> request) {
+    @RequestMapping(value = "/add/schwarzKorkhausPairPoints/{type}/{id}", method = RequestMethod.PUT, produces = "application/json")
+    public List<SchwarzKorkhausDto> setSchwarzKorkhausPairPoints(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id, @PathVariable AnalysisType type, @RequestBody List<SchwarzKorkhausDto> request) {
         User user = userService.getUser(userPrincipal.getId());
         if (user.getUserType() != UserType.LAB)
             throw new BadRequestException("User must be Laboratory");
@@ -166,7 +167,7 @@ public class MedicalCaseController {
             schwarzKorkhausPairPointService.removePairPoints(medicalCase);
         }
 
-        List<SchwarzKorkhausPairPoint> pairPoints = schwarzKorkhausPairPointService.savePairPoints(medicalCase, request);
+        List<SchwarzKorkhausPairPoint> pairPoints = schwarzKorkhausPairPointService.savePairPoints(medicalCase, request, type);
 
         List<SchwarzKorkhausDto> response = new ArrayList<>();
         for (SchwarzKorkhausPairPoint schwarzKorkhausPairPoint : pairPoints){
