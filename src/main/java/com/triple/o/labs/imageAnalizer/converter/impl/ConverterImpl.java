@@ -12,6 +12,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 
 @Service
 public class ConverterImpl implements Converter {
@@ -44,6 +45,8 @@ public class ConverterImpl implements Converter {
                 schwarzKorkhausDto.setPosition(positionDto);
                 medicalCaseResponseDto.getPairPoints().add(schwarzKorkhausDto);
             }
+
+            medicalCaseResponseDto.getPairPoints().sort(Comparator.comparing(SchwarzKorkhausDto::getSort));
         }
 
         return medicalCaseResponseDto;
