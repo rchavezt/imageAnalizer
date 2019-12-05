@@ -6,8 +6,8 @@ import com.triple.o.labs.imageAnalizer.dtos.responses.NotificationResponseDto;
 import com.triple.o.labs.imageAnalizer.entities.Notification;
 import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.exceptions.BadRequestException;
-import com.triple.o.labs.imageAnalizer.services.NotificationService;
 import com.triple.o.labs.imageAnalizer.services.UserService;
+import com.triple.o.labs.imageAnalizer.services.impl.NotificationThreadService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -23,7 +23,7 @@ import java.util.List;
 public class NotificationController {
 
     @Autowired
-    private NotificationService notificationService;
+    private NotificationThreadService notificationService;
 
     @Autowired
     private UserService userService;

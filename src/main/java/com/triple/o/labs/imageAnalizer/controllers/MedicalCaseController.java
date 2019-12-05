@@ -4,7 +4,6 @@ import com.triple.o.labs.imageAnalizer.config.UserPrincipal;
 import com.triple.o.labs.imageAnalizer.config.security.CurrentUser;
 import com.triple.o.labs.imageAnalizer.converter.Converter;
 import com.triple.o.labs.imageAnalizer.dtos.MedicalCaseDto;
-import com.triple.o.labs.imageAnalizer.dtos.PatientDto;
 import com.triple.o.labs.imageAnalizer.dtos.image.ImageRequestDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.InitialMedicalCaseDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.points.PositionDto;
@@ -16,6 +15,7 @@ import com.triple.o.labs.imageAnalizer.enums.AnalysisType;
 import com.triple.o.labs.imageAnalizer.enums.UserType;
 import com.triple.o.labs.imageAnalizer.exceptions.BadRequestException;
 import com.triple.o.labs.imageAnalizer.services.*;
+import com.triple.o.labs.imageAnalizer.services.impl.NotificationThreadService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
@@ -38,7 +38,7 @@ public class MedicalCaseController {
     private UserService userService;
 
     @Autowired
-    private NotificationService notificationService;
+    private NotificationThreadService notificationService;
 
     @Autowired
     private SchwarzKorkhausPairPointService schwarzKorkhausPairPointService;
@@ -116,7 +116,7 @@ public class MedicalCaseController {
         MedicalCase medicalCase = caseService.createMedicalCase(user, medicalCaseRequestDto, stl, user.getUsername());
 
         String notificationMessage = String.format("New case ID: %d for Doctor: %s", medicalCase.getId(), medicalCase.getUser().getName());
-        notificationService.createNotification(notificationMessage, UserType.LAB);
+        notificationService.executeNotificationAsynchronously(notificationMessage, UserType.LAB);
 
         return converter.convertMedicalCase(medicalCase);
     }
@@ -133,7 +133,8 @@ public class MedicalCaseController {
         medicalCase = caseService.addModels(medicalCase, imageCase, user.getUsername());
 
         String notificationMessage = String.format("Case ID: %d is modeled", medicalCase.getId());
-        notificationService.createNotification(notificationMessage, medicalCase.getUser());
+        notificationService.executeNotificationAsynchronously(notificationMessage, medicalCase.getUser());
+
         return converter.convertMedicalCase(medicalCase);
     }
 
@@ -180,7 +181,7 @@ public class MedicalCaseController {
         response.sort(Comparator.comparing(SchwarzKorkhausDto::getSort));
 
         String notificationMessage = String.format("Case ID: %d is analyzed", medicalCase.getId());
-        notificationService.createNotification(notificationMessage, medicalCase.getUser());
+        notificationService.executeNotificationAsynchronously(notificationMessage, medicalCase.getUser());
         return response;
     }
 
