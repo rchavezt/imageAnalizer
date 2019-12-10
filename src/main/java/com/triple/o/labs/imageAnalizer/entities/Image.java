@@ -1,5 +1,6 @@
 package com.triple.o.labs.imageAnalizer.entities;
 
+import com.triple.o.labs.imageAnalizer.enums.ImageType;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.annotations.Where;
@@ -10,7 +11,7 @@ import javax.persistence.*;
 @Getter
 @Setter
 @Where(clause = "ACTIVE = 1")
-public class Snapshot {
+public class Image extends CommonEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -24,4 +25,12 @@ public class Snapshot {
     @Lob
     @Column
     private byte[] base64file;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private ImageType imageType;
+
+    @ManyToOne
+    @JoinColumn(name = "fk_medical_case")
+    private MedicalCase medicalCase;
 }

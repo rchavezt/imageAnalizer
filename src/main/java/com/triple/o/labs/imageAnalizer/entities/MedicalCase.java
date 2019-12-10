@@ -32,6 +32,16 @@ public class MedicalCase extends UserTrackingEntity{
     @Nullable
     private AnalysisType analysisType;
 
+    @Lob
+    @Column
+    private String observations;
+
+    @Column
+    private String upperAppliance;
+
+    @Column
+    private String lowerAppliance;
+
     @ManyToOne
     @JoinColumn(name="patient_id", nullable=false)
     private Patient patient;
@@ -40,13 +50,19 @@ public class MedicalCase extends UserTrackingEntity{
     private User user;
 
     @OneToOne
-    private Stl stl;
+    private Image stl;
 
     @OneToOne
-    private MedicalCaseImage medicalCaseImage;
+    private Image medicalCaseImage;
 
     @OneToOne
-    private Snapshot snapshotImageAnalyzed;
+    private Image snapshotImageAnalyzed;
+
+    @OneToOne
+    private Image bilmer;
+
+    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "medicalCase")
+    private List<Image> extraImages;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "medicalCase")
     private List<SchwarzKorkhausPairPoint> pairPoints;

@@ -8,22 +8,18 @@ import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
 import com.triple.o.labs.imageAnalizer.services.ExportReportService;
 import com.triple.o.labs.imageAnalizer.services.report.Footer;
 import org.springframework.stereotype.Service;
-import org.springframework.util.ResourceUtils;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.net.URISyntaxException;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 
 @Service
 public class ExportReportServiceImpl implements ExportReportService {
     @Override
     public byte[] exportReport(MedicalCase medicalCase) throws IOException, URISyntaxException, DocumentException {
-        Path path = Paths.get(ResourceUtils.getURL("classpath:images/cfoo-logo.jpg").toURI());
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
         Document document = new Document();
-        Font fontHeager = FontFactory.getFont(FontFactory.HELVETICA, 16, BaseColor.BLACK);
+        Font fontHeader = FontFactory.getFont(FontFactory.HELVETICA, 16, BaseColor.BLACK);
         Font font = FontFactory.getFont(FontFactory.HELVETICA, 12, BaseColor.BLACK);
         PdfWriter writer = PdfWriter.getInstance(document, byteArrayOutputStream);
         Footer footer = new Footer();
@@ -38,13 +34,20 @@ public class ExportReportServiceImpl implements ExportReportService {
                         "Int Cell: 940-465-0711" + "\n" +
                         "Skip Truitt BS DDS" + "\n" +
                         "skip@cfoo.com"
-        );
+        , fontHeader);
 
         Paragraph headerPara = new Paragraph();
         headerPara.add(header);
         headerPara.setAlignment(Element.ALIGN_CENTER);
 
         document.add(headerPara);
+
+        document.add(Chunk.NEWLINE);
+        document.add(Chunk.NEWLINE);
+
+        Phrase observations = new Phrase(medicalCase.getObservations(), font);
+
+        document.add(observations);
 
         document.newPage();
 
@@ -69,8 +72,8 @@ public class ExportReportServiceImpl implements ExportReportService {
                 "Special Instructions" +
                 "\n" +
                 "\n" +
-                "Upper Appliance: " + "\n     " + medicalCase.getDetail() + "\n" +
-                "Lower Appliance: " + "\n     " + medicalCase.getDetail() + "\n" +
+                "Upper Appliance:" + "\n     " + medicalCase.getUpperAppliance() + "\n" +
+                "Lower Appliance:" + "\n     " + medicalCase.getLowerAppliance() + "\n" +
                 "\n" +
                 "\n" +
                 "Schwarz-Korkhaus Elite Arch Analysis Rx:\n", font);
@@ -81,11 +84,9 @@ public class ExportReportServiceImpl implements ExportReportService {
 
         Image analyzedModel = Image.getInstance(medicalCase.getSnapshotImageAnalyzed().getBase64file());
         analyzedModel.scaleAbsolute(200,400);
-        //analyzedModel.setAlignment(Image.LEFT);
 
-        Image originalModel = Image.getInstance(medicalCase.getMedicalCaseImage().getBase64image());
+        Image originalModel = Image.getInstance(medicalCase.getMedicalCaseImage().getBase64file());
         originalModel.scaleAbsolute(200,400);
-        //originalModel.setAlignment(Image.RIGHT);
 
         table.addCell(getCell(analyzedModel, PdfPCell.ALIGN_LEFT));
         table.addCell(getCell(originalModel, PdfPCell.ALIGN_RIGHT));

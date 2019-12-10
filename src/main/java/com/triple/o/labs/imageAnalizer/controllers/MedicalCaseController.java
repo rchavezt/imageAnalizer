@@ -3,6 +3,7 @@ package com.triple.o.labs.imageAnalizer.controllers;
 import com.triple.o.labs.imageAnalizer.config.UserPrincipal;
 import com.triple.o.labs.imageAnalizer.config.security.CurrentUser;
 import com.triple.o.labs.imageAnalizer.converter.Converter;
+import com.triple.o.labs.imageAnalizer.dtos.AppliancesDto;
 import com.triple.o.labs.imageAnalizer.dtos.MedicalCaseDto;
 import com.triple.o.labs.imageAnalizer.dtos.image.ImageRequestDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.InitialMedicalCaseDto;
@@ -10,11 +11,17 @@ import com.triple.o.labs.imageAnalizer.dtos.requests.points.PositionDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.points.SchwarzKorkhausDto;
 import com.triple.o.labs.imageAnalizer.dtos.responses.MedicalCaseResponseDto;
 import com.triple.o.labs.imageAnalizer.dtos.responses.MedicalCaseSimpleResponseDto;
-import com.triple.o.labs.imageAnalizer.entities.*;
+import com.triple.o.labs.imageAnalizer.entities.Image;
+import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
+import com.triple.o.labs.imageAnalizer.entities.SchwarzKorkhausPairPoint;
+import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.enums.AnalysisType;
 import com.triple.o.labs.imageAnalizer.enums.UserType;
 import com.triple.o.labs.imageAnalizer.exceptions.BadRequestException;
-import com.triple.o.labs.imageAnalizer.services.*;
+import com.triple.o.labs.imageAnalizer.services.CaseService;
+import com.triple.o.labs.imageAnalizer.services.ImageService;
+import com.triple.o.labs.imageAnalizer.services.SchwarzKorkhausPairPointService;
+import com.triple.o.labs.imageAnalizer.services.UserService;
 import com.triple.o.labs.imageAnalizer.services.impl.NotificationThreadService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +29,9 @@ import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Comparator;
+import java.util.List;
 
 @RestController
 @RequestMapping(value = "/case", headers = "Authorization")
@@ -30,9 +39,6 @@ public class MedicalCaseController {
 
     @Autowired
     private CaseService caseService;
-
-    @Autowired
-    private ScannerImagesService scannerImagesService;
 
     @Autowired
     private UserService userService;
@@ -44,7 +50,7 @@ public class MedicalCaseController {
     private SchwarzKorkhausPairPointService schwarzKorkhausPairPointService;
 
     @Autowired
-    private StlService stlService;
+    private ImageService imageService;
 
     @Autowired
     private Converter converter;
@@ -111,7 +117,7 @@ public class MedicalCaseController {
         if (user.getUserType() != UserType.DOCTOR)
             throw new BadRequestException("User must be Doctor");
 
-        Stl stl = stlService.getFile(medicalCaseRequestDto.getStlId());
+        Image stl = imageService.getFile(medicalCaseRequestDto.getStlId());
 
         MedicalCase medicalCase = caseService.createMedicalCase(user, medicalCaseRequestDto, stl, user.getUsername());
 
@@ -129,13 +135,41 @@ public class MedicalCaseController {
             throw new BadRequestException("User must be Laboratory");
 
         MedicalCase medicalCase = caseService.getCase(id);
-        MedicalCaseImage imageCase = scannerImagesService.saveMedicalCaseImage(medicalCase.getPatient().getId(), imageRequestDto.getUpper(), imageRequestDto.getLower());
+        Image imageCase = imageService.saveMedicalCaseImage(medicalCase.getPatient().getId(), imageRequestDto.getUpper(), imageRequestDto.getLower());
         medicalCase = caseService.addModels(medicalCase, imageCase, user.getUsername());
 
         String notificationMessage = String.format("Case ID: %d is modeled", medicalCase.getId());
         notificationService.executeNotificationAsynchronously(notificationMessage, medicalCase.getUser());
 
         return converter.convertMedicalCase(medicalCase);
+    }
+
+    @Secured("ROLE_CASES_EDIT")
+    @RequestMapping(value = "/add/observations/case/{id}", method = RequestMethod.PUT, produces = "application/json")
+    public String addObservationsToMedicalCase(@CurrentUser UserPrincipal userPrincipal, @RequestBody String observations, @PathVariable Long id) {
+
+        User user = userService.getUser(userPrincipal.getId());
+        if (user.getUserType() != UserType.LAB) {
+            throw new BadRequestException("User must be Laboratory");
+        }
+
+        return caseService.addObservations(id, observations, user.getUsername());
+    }
+
+    @Secured("ROLE_CASES_EDIT")
+    @RequestMapping(value = "/add/appliances/case/{id}", method = RequestMethod.PUT, produces = "application/json")
+    public AppliancesDto addAppliancesToMedicalCase(@CurrentUser UserPrincipal userPrincipal, @RequestBody AppliancesDto appliances, @PathVariable Long id) {
+        User user = userService.getUser(userPrincipal.getId());
+        if (user.getUserType() != UserType.LAB) {
+            throw new BadRequestException("User must be Laboratory");
+        }
+
+        MedicalCase medicalCase = caseService.addAppliances(id, appliances, user.getUsername());
+
+        appliances.setUpperAppliance(medicalCase.getUpperAppliance());
+        appliances.setLowerAppliance(medicalCase.getLowerAppliance());
+
+        return appliances;
     }
 
     @PreAuthorize("hasRole('ROLE_CASES_CREATE') and hasRole('ROLE_DOCTOR_ASSIGN')")
@@ -146,7 +180,7 @@ public class MedicalCaseController {
         if (user.getUserType() != UserType.LAB)
             throw new BadRequestException("User must be Laboratory");
 
-        Stl stl = stlService.getFile(medicalCaseRequestDto.getStlId());
+        Image stl = imageService.getFile(medicalCaseRequestDto.getStlId());
 
         MedicalCase medicalCase = caseService.createMedicalCase(userDoctor, medicalCaseRequestDto, stl, user.getUsername());
         return converter.convertMedicalCase(medicalCase);
