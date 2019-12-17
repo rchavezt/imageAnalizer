@@ -2,6 +2,7 @@ package com.triple.o.labs.imageAnalizer.services.impl;
 
 import com.triple.o.labs.imageAnalizer.daos.ImageDao;
 import com.triple.o.labs.imageAnalizer.entities.Image;
+import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
 import com.triple.o.labs.imageAnalizer.enums.ImageType;
 import com.triple.o.labs.imageAnalizer.exceptions.BadRequestException;
 import com.triple.o.labs.imageAnalizer.services.ImageService;
@@ -26,7 +27,7 @@ public class ImageServiceImpl implements ImageService {
     private ImageDao imageDao;
 
     @Override
-    public Image storeFile(MultipartFile file, ImageType imageType) {
+    public Image storeFile(MultipartFile file, ImageType imageType, MedicalCase medicalCase) {
         String fileName = StringUtils.cleanPath(file.getOriginalFilename());
 
         try {
@@ -34,6 +35,9 @@ public class ImageServiceImpl implements ImageService {
             Image image = new Image();
 
             image.setFileName(fileName);
+            if (medicalCase != null) {
+                image.setMedicalCase(medicalCase);
+            }
             image.setBase64file(file.getBytes());
             image.setFileType(file.getContentType());
             image.setImageType(imageType);
@@ -47,6 +51,12 @@ public class ImageServiceImpl implements ImageService {
     @Override
     public Image getFile(Long id) {
         return imageDao.findById(id).get();
+    }
+
+    @Override
+    public void updateStl(Image stl, MedicalCase medicalCase) {
+        stl.setMedicalCase(medicalCase);
+        imageDao.save(stl);
     }
 
     @Override

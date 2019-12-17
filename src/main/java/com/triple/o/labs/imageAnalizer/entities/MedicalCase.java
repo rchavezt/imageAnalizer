@@ -52,7 +52,7 @@ public class MedicalCase extends UserTrackingEntity{
     @OneToOne
     private Image stl;
 
-    @OneToOne
+    @OneToOne()
     private Image medicalCaseImage;
 
     @OneToOne

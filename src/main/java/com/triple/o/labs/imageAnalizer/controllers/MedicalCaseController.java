@@ -123,6 +123,7 @@ public class MedicalCaseController {
         Image stl = imageService.getFile(medicalCaseRequestDto.getStlId());
 
         MedicalCase medicalCase = caseService.createMedicalCase(user, medicalCaseRequestDto, stl, user.getUsername());
+        imageService.updateStl(stl, medicalCase);
 
         String notificationMessage = String.format("New case ID: %d for Doctor: %s", medicalCase.getId(), medicalCase.getUser().getName());
         notificationService.executeNotificationAsynchronously(notificationMessage, UserType.LAB);
@@ -186,6 +187,8 @@ public class MedicalCaseController {
         Image stl = imageService.getFile(medicalCaseRequestDto.getStlId());
 
         MedicalCase medicalCase = caseService.createMedicalCase(userDoctor, medicalCaseRequestDto, stl, user.getUsername());
+        imageService.updateStl(stl, medicalCase);
+
         return converter.convertMedicalCase(medicalCase);
     }
 

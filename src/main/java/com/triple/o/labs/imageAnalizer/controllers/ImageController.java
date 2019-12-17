@@ -148,7 +148,7 @@ public class ImageController {
     @RequestMapping(value = "/stl/add", method = RequestMethod.POST, produces = "application/json")
     public ImageStatusResponseDto addStl(@CurrentUser UserPrincipal userPrincipal, @RequestParam("file") MultipartFile file){
 
-        Image stl = imageService.storeFile(file, ImageType.stl);
+        Image stl = imageService.storeFile(file, ImageType.stl, null);
 
         ImageStatusResponseDto imageStatusResponseDto = new ImageStatusResponseDto();
         imageStatusResponseDto.setId(stl.getId());
@@ -173,7 +173,7 @@ public class ImageController {
         ImageStatusResponseDto imageStatusResponseDto = new ImageStatusResponseDto();
         MedicalCase medicalCase = caseService.getCase(id);
 
-        Image image = imageService.storeFile(file, imageType);
+        Image image = imageService.storeFile(file, imageType, medicalCase);
         imageStatusResponseDto.setId(image.getId());
 
         switch (imageType){
