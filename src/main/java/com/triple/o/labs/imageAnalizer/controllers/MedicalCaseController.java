@@ -6,6 +6,7 @@ import com.triple.o.labs.imageAnalizer.converter.Converter;
 import com.triple.o.labs.imageAnalizer.dtos.AppliancesDto;
 import com.triple.o.labs.imageAnalizer.dtos.MedicalCaseDto;
 import com.triple.o.labs.imageAnalizer.dtos.image.ImageRequestDto;
+import com.triple.o.labs.imageAnalizer.dtos.requests.AnomalyDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.InitialMedicalCaseDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.points.PositionDto;
 import com.triple.o.labs.imageAnalizer.dtos.requests.points.SchwarzKorkhausDto;
@@ -28,6 +29,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.HttpServerErrorException;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
 import java.util.Comparator;
@@ -219,4 +222,9 @@ public class MedicalCaseController {
         return response;
     }
 
+    @Secured("ROLE_CASES_EDIT")
+    @RequestMapping(value = "/check/anomaly/case/{id}", method = RequestMethod.PUT)
+    public void checkAnomaly(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id, @RequestBody AnomalyDto anomalyDto) {
+        throw new NotImplementedException();
+    }
 }
