@@ -131,6 +131,20 @@ public class ImageController {
                     throw new ResourceNotFoundException("Bilmer image", "Medical Case", id);
                 }
                 break;
+            case canvas:
+                if (medicalCase.getCanvas() != null) {
+                    image = medicalCase.getCanvas();
+                } else {
+                    throw new ResourceNotFoundException("Canvas image", "Medical Case", id);
+                }
+                break;
+            case analyzedBlue:
+                if (medicalCase.getAnalyzedBlue() != null) {
+                    image = medicalCase.getAnalyzedBlue();
+                } else {
+                    throw new ResourceNotFoundException("AnalyzedBlue image", "Medical Case", id);
+                }
+                break;
             default:
                 throw new IllegalStateException("Unexpected value: " + imageType + "is not valid or is used by another EP.");
         }
@@ -194,6 +208,20 @@ public class ImageController {
             case bilmer:
                 try {
                     caseService.addBilmer(medicalCase, image, user.getUsername());
+                } catch (Exception e) {
+                    throw new BadRequestException("Error uploading bilmer", e);
+                }
+                break;
+            case canvas:
+                try {
+                    caseService.addCanvas(medicalCase, image, user.getUsername());
+                } catch (Exception e) {
+                    throw new BadRequestException("Error uploading bilmer", e);
+                }
+                break;
+            case analyzedBlue:
+                try {
+                    caseService.addAnalyzedBlue(medicalCase, image, user.getUsername());
                 } catch (Exception e) {
                     throw new BadRequestException("Error uploading bilmer", e);
                 }

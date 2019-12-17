@@ -1,6 +1,8 @@
 package com.triple.o.labs.imageAnalizer.services.impl;
 
 import com.itextpdf.text.*;
+import com.itextpdf.text.Font;
+import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
@@ -9,8 +11,13 @@ import com.triple.o.labs.imageAnalizer.services.ExportReportService;
 import com.triple.o.labs.imageAnalizer.services.report.Footer;
 import org.springframework.stereotype.Service;
 
+import javax.imageio.ImageIO;
+import java.awt.*;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URISyntaxException;
 
 @Service
@@ -48,6 +55,8 @@ public class ExportReportServiceImpl implements ExportReportService {
         Phrase observations = new Phrase(medicalCase.getObservations(), font);
 
         document.add(observations);
+
+        //Second page
 
         document.newPage();
 
@@ -92,6 +101,55 @@ public class ExportReportServiceImpl implements ExportReportService {
         table.addCell(getCell(originalModel, PdfPCell.ALIGN_RIGHT));
 
         document.add(table);
+
+        //Third page
+
+        document.newPage();
+
+        Phrase phraseTitle = new Phrase("Doctor: " + medicalCase.getUser().getName() + "\n" +
+                "Patient: " + medicalCase.getPatient().getFirstName() + " " + medicalCase.getPatient().getLastName(), font);
+
+        document.add(phraseTitle);
+
+        InputStream blimerBase64 = new ByteArrayInputStream(medicalCase.getBilmer().getBase64file());
+
+        BufferedImage blimerBuffer = ImageIO.read(blimerBase64);
+        blimerBuffer = blimerBuffer.getSubimage(0, 0, blimerBuffer.getWidth() / 2, blimerBuffer.getHeight());
+
+        Graphics2D g2 = blimerBuffer.createGraphics();
+        Color oldColor = g2.getColor();
+        g2.fillRect(0, 0, blimerBuffer.getWidth() / 2, blimerBuffer.getHeight());
+        g2.setColor(oldColor);
+        g2.drawImage(blimerBuffer, null, 0, 0);
+        g2.dispose();
+        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+        try {
+            ImageIO.write(blimerBuffer, "png", bos );
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        Image blimer = Image.getInstance(bos.toByteArray());
+        blimer.setAlignment(Element.ALIGN_CENTER);
+
+        document.add(blimer);
+
+        //Fourth page
+
+        document.newPage();
+
+        Image blimerOriginal = Image.getInstance(medicalCase.getBilmer().getBase64file());
+
+        document.add(blimerOriginal);
+
+        //Extra pages
+
+        for (com.triple.o.labs.imageAnalizer.entities.Image extra: medicalCase.getExtraImages()) {
+            document.newPage();
+            Image extraiText = Image.getInstance(extra.getBase64file());
+            document.add(extraiText);
+        }
 
         document.close();
         return byteArrayOutputStream.toByteArray();

@@ -5,5 +5,7 @@ public enum ImageType {
     original,
     analyzed,
     bilmer,
-    extra
+    extra,
+    canvas,
+    analyzedBlue
 }

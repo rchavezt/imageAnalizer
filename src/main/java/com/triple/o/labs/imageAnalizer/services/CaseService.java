@@ -16,6 +16,8 @@ public interface CaseService {
     MedicalCase addModels(MedicalCase medicalCase, Image medicalCaseImage, String userEditing);
     MedicalCase addSnapshot(MedicalCase medicalCase, Image snapshotImageAnalyzed, String userEditing);
     MedicalCase addBilmer(MedicalCase medicalCase, Image bilmer, String userEditing);
+    MedicalCase addCanvas(MedicalCase medicalCase, Image canvas, String userEditing);
+    MedicalCase addAnalyzedBlue(MedicalCase medicalCase, Image analyzedBlue, String userEditing);
     MedicalCase addExtra(MedicalCase medicalCase, Image extra, String userEditing);
     MedicalCase editMedicalCase(Long id, MedicalCaseDto medicalCaseDto, String userEditing);
     MedicalCase createMedicalCase(User user, MedicalCaseRequestDto medicalCase, Image stl, String userCreating);

@@ -61,6 +61,12 @@ public class MedicalCase extends UserTrackingEntity{
     @OneToOne
     private Image bilmer;
 
+    @OneToOne
+    private Image canvas;
+
+    @OneToOne
+    private Image analyzedBlue;
+
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "medicalCase")
     private List<Image> extraImages;
 

@@ -69,6 +69,20 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
+    public MedicalCase addCanvas(MedicalCase medicalCase, Image canvas, String userEditing) {
+        medicalCase.setCanvas(canvas);
+        medicalCase.setUpdatedBy(userEditing);
+        return casesDao.save(medicalCase);
+    }
+
+    @Override
+    public MedicalCase addAnalyzedBlue(MedicalCase medicalCase, Image analyzedBlue, String userEditing) {
+        medicalCase.setAnalyzedBlue(analyzedBlue);
+        medicalCase.setUpdatedBy(userEditing);
+        return casesDao.save(medicalCase);
+    }
+
+    @Override
     public MedicalCase addExtra(MedicalCase medicalCase, Image extra, String userEditing) {
         List<Image> extras = medicalCase.getExtraImages();
 
