@@ -104,44 +104,48 @@ public class ExportReportServiceImpl implements ExportReportService {
 
         //Third page
 
-        document.newPage();
+        if (medicalCase.getBilmer() != null) {
 
-        Phrase phraseTitle = new Phrase("Doctor: " + medicalCase.getUser().getName() + "\n" +
-                "Patient: " + medicalCase.getPatient().getFirstName() + " " + medicalCase.getPatient().getLastName(), font);
+            document.newPage();
 
-        document.add(phraseTitle);
+            Phrase phraseTitle = new Phrase("Doctor: " + medicalCase.getUser().getName() + "\n" +
+                    "Patient: " + medicalCase.getPatient().getFirstName() + " " + medicalCase.getPatient().getLastName(), font);
 
-        InputStream blimerBase64 = new ByteArrayInputStream(medicalCase.getBilmer().getBase64file());
+            document.add(phraseTitle);
 
-        BufferedImage blimerBuffer = ImageIO.read(blimerBase64);
-        blimerBuffer = blimerBuffer.getSubimage(0, 0, blimerBuffer.getWidth() / 2, blimerBuffer.getHeight());
+            InputStream blimerBase64 = new ByteArrayInputStream(medicalCase.getBilmer().getBase64file());
 
-        Graphics2D g2 = blimerBuffer.createGraphics();
-        Color oldColor = g2.getColor();
-        g2.fillRect(0, 0, blimerBuffer.getWidth() / 2, blimerBuffer.getHeight());
-        g2.setColor(oldColor);
-        g2.drawImage(blimerBuffer, null, 0, 0);
-        g2.dispose();
-        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+            BufferedImage blimerBuffer = ImageIO.read(blimerBase64);
+            blimerBuffer = blimerBuffer.getSubimage(0, 0, blimerBuffer.getWidth() / 2, blimerBuffer.getHeight());
 
-        try {
-            ImageIO.write(blimerBuffer, "png", bos );
-        } catch (IOException e) {
-            e.printStackTrace();
+            Graphics2D g2 = blimerBuffer.createGraphics();
+            Color oldColor = g2.getColor();
+            g2.fillRect(0, 0, blimerBuffer.getWidth() / 2, blimerBuffer.getHeight());
+            g2.setColor(oldColor);
+            g2.drawImage(blimerBuffer, null, 0, 0);
+            g2.dispose();
+            ByteArrayOutputStream bos = new ByteArrayOutputStream();
+
+            try {
+                ImageIO.write(blimerBuffer, "png", bos);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            Image blimer = Image.getInstance(bos.toByteArray());
+            blimer.setAlignment(Element.ALIGN_CENTER);
+
+            document.add(blimer);
+
+            //Fourth page
+
+            document.newPage();
+
+            Image blimerOriginal = Image.getInstance(medicalCase.getBilmer().getBase64file());
+
+            document.add(blimerOriginal);
+
         }
-
-        Image blimer = Image.getInstance(bos.toByteArray());
-        blimer.setAlignment(Element.ALIGN_CENTER);
-
-        document.add(blimer);
-
-        //Fourth page
-
-        document.newPage();
-
-        Image blimerOriginal = Image.getInstance(medicalCase.getBilmer().getBase64file());
-
-        document.add(blimerOriginal);
 
         //Extra pages
 

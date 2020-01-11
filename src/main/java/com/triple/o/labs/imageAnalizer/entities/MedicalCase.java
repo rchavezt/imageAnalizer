@@ -1,6 +1,7 @@
 package com.triple.o.labs.imageAnalizer.entities;
 
 import com.triple.o.labs.imageAnalizer.enums.AnalysisType;
+import com.triple.o.labs.imageAnalizer.enums.ImageType;
 import com.triple.o.labs.imageAnalizer.enums.Status;
 import lombok.Getter;
 import lombok.Setter;
@@ -9,6 +10,7 @@ import org.springframework.lang.Nullable;
 
 import javax.persistence.*;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Getter
@@ -52,7 +54,7 @@ public class MedicalCase extends UserTrackingEntity{
     @OneToOne
     private Image stl;
 
-    @OneToOne()
+    @OneToOne
     private Image medicalCaseImage;
 
     @OneToOne
@@ -67,9 +69,13 @@ public class MedicalCase extends UserTrackingEntity{
     @OneToOne
     private Image analyzedBlue;
 
-    @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "medicalCase")
+    @OneToMany(cascade = CascadeType.PERSIST)
     private List<Image> extraImages;
 
     @OneToMany(cascade = CascadeType.PERSIST, mappedBy = "medicalCase")
     private List<SchwarzKorkhausPairPoint> pairPoints;
+
+    public List<Image> getExtraImages() {
+        return extraImages.stream().filter( e -> e.getImageType() == ImageType.extra).collect(Collectors.toList());
+    }
 }
