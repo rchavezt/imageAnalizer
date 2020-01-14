@@ -17,6 +17,7 @@ import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
 import com.triple.o.labs.imageAnalizer.entities.SchwarzKorkhausPairPoint;
 import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.enums.AnalysisType;
+import com.triple.o.labs.imageAnalizer.enums.Anomaly;
 import com.triple.o.labs.imageAnalizer.enums.UserType;
 import com.triple.o.labs.imageAnalizer.exceptions.BadRequestException;
 import com.triple.o.labs.imageAnalizer.services.CaseService;
@@ -126,7 +127,7 @@ public class MedicalCaseController {
         imageService.updateStl(stl, medicalCase);
 
         String notificationMessage = String.format("New case ID: %d for Doctor: %s", medicalCase.getId(), medicalCase.getUser().getName());
-        notificationService.executeNotificationAsynchronously(notificationMessage, UserType.LAB);
+        notificationService.executeNotificationAsynchronously(notificationMessage, UserType.LAB, medicalCase.getId());
 
         return converter.convertMedicalCase(medicalCase);
     }
@@ -143,7 +144,7 @@ public class MedicalCaseController {
         medicalCase = caseService.addModels(medicalCase, imageCase, user.getUsername());
 
         String notificationMessage = String.format("Case ID: %d is modeled", medicalCase.getId());
-        notificationService.executeNotificationAsynchronously(notificationMessage, medicalCase.getUser());
+        notificationService.executeNotificationAsynchronously(notificationMessage, medicalCase.getUser(), medicalCase.getId());
 
         return converter.convertMedicalCase(medicalCase);
     }
@@ -221,13 +222,23 @@ public class MedicalCaseController {
         response.sort(Comparator.comparing(SchwarzKorkhausDto::getSort));
 
         String notificationMessage = String.format("Case ID: %d is analyzed", medicalCase.getId());
-        notificationService.executeNotificationAsynchronously(notificationMessage, medicalCase.getUser());
+        notificationService.executeNotificationAsynchronously(notificationMessage, medicalCase.getUser(), medicalCase.getId());
         return response;
     }
 
     @Secured("ROLE_CASES_EDIT")
     @RequestMapping(value = "/check/anomaly/case/{id}", method = RequestMethod.PUT)
-    public void checkAnomaly(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id, @RequestBody AnomalyDto anomalyDto) {
-        throw new NotImplementedException();
+    public MedicalCaseResponseDto checkAnomaly(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id, @RequestBody AnomalyDto anomalyDto) {
+        User user = userService.getUser(userPrincipal.getId());
+        if (user.getUserType() != UserType.LAB)
+            throw new BadRequestException("User must be Laboratory");
+
+        if (anomalyDto.getCentralLeftLength() - anomalyDto.getLateralLeftLength() > 2.0){
+            return converter.convertMedicalCase(caseService.addAnomaly(id, Anomaly.MACRODONTIC, user.getUsername()));
+        } else if (anomalyDto.getCentralLeftLength() - anomalyDto.getLateralLeftLength() < 2.0) {
+            return converter.convertMedicalCase(caseService.addAnomaly(id, Anomaly.MICRODONTIC, user.getUsername()));
+        } else {
+            return converter.convertMedicalCase(caseService.addAnomaly(id, Anomaly.NONE, user.getUsername()));
+        }
     }
 }

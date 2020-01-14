@@ -28,6 +28,7 @@ public class NotificationService implements Runnable  {
     private String message;
     private UserType userType;
     private User user;
+    private Long caseId;
 
     @Override
     public void run() {
@@ -43,6 +44,7 @@ public class NotificationService implements Runnable  {
                 Notification notification = new Notification();
                 notification.setMessage(message);
                 notification.setUser(user);
+                notification.setCaseId(caseId);
                 notificationDao.save(notification);
 
                 emailService.sendEmail(notification);
@@ -51,6 +53,7 @@ public class NotificationService implements Runnable  {
             Notification notification = new Notification();
             notification.setMessage(message);
             notification.setUser(user);
+            notification.setCaseId(caseId);
             notificationDao.save(notification);
 
             emailService.sendEmail(notification);
@@ -79,5 +82,13 @@ public class NotificationService implements Runnable  {
 
     public void setUser(User user) {
         this.user = user;
+    }
+
+    public Long getCaseId() {
+        return caseId;
+    }
+
+    public void setCaseId(Long caseId) {
+        this.caseId = caseId;
     }
 }

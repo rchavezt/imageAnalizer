@@ -23,19 +23,21 @@ public class NotificationThreadService {
     @Autowired
     private NotificationDao notificationDao;
 
-    public void executeNotificationAsynchronously(String message, UserType userType) {
+    public void executeNotificationAsynchronously(String message, UserType userType, Long caseId) {
 
         NotificationService notificationService = applicationContext.getBean(NotificationService.class);
         notificationService.setMessage(message);
         notificationService.setUserType(userType);
+        notificationService.setCaseId(caseId);
         taskExecutor.execute(notificationService);
     }
 
-    public void executeNotificationAsynchronously(String message, User user) {
+    public void executeNotificationAsynchronously(String message, User user, Long caseId) {
 
         NotificationService notificationService = applicationContext.getBean(NotificationService.class);
         notificationService.setMessage(message);
         notificationService.setUser(user);
+        notificationService.setCaseId(caseId);
         taskExecutor.execute(notificationService);
     }
 

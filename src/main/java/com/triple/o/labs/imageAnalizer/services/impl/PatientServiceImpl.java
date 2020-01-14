@@ -22,6 +22,9 @@ public class PatientServiceImpl implements PatientService {
     @Autowired
     private UsersDao usersDao;
 
+    @Autowired
+    private UtilsService utilsService;
+
     @Override
     public Patient getPatient(Long id) {
         return patientDao.findById(id).get();
@@ -50,7 +53,7 @@ public class PatientServiceImpl implements PatientService {
     @Override
     public Patient editPatient(Long id, PatientDto patientDto, String userEditing) {
         Patient patient = patientDao.findById(id).get();
-        BeanUtils.copyProperties(patientDto, patient);
+        BeanUtils.copyProperties(patientDto, patient, utilsService.getNullPropertyNames(patientDto));
         patient.setUpdatedBy(userEditing);
         return patientDao.save(patient);
     }

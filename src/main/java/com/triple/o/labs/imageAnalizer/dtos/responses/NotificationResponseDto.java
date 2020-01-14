@@ -8,5 +8,6 @@ import lombok.Setter;
 public class NotificationResponseDto {
     private Long id;
     private String message;
+    private Long caseId;
     private boolean isRead;
 }

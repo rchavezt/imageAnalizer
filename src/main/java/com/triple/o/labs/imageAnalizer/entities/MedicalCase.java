@@ -1,6 +1,7 @@
 package com.triple.o.labs.imageAnalizer.entities;
 
 import com.triple.o.labs.imageAnalizer.enums.AnalysisType;
+import com.triple.o.labs.imageAnalizer.enums.Anomaly;
 import com.triple.o.labs.imageAnalizer.enums.ImageType;
 import com.triple.o.labs.imageAnalizer.enums.Status;
 import lombok.Getter;
@@ -28,6 +29,10 @@ public class MedicalCase extends UserTrackingEntity{
     @Column
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    @Column
+    @Enumerated(EnumType.STRING)
+    private Anomaly anomaly;
 
     @Column
     @Enumerated(EnumType.STRING)
@@ -65,9 +70,6 @@ public class MedicalCase extends UserTrackingEntity{
 
     @OneToOne
     private Image canvas;
-
-    @OneToOne
-    private Image analyzedBlue;
 
     @OneToMany(cascade = CascadeType.PERSIST)
     private List<Image> extraImages;

@@ -26,6 +26,9 @@ public class UserServiceImpl implements UserService {
     @Autowired
     PasswordEncoder passwordEncoder;
 
+    @Autowired
+    UtilsService utilsService;
+
     public List<User> getAllUsers() {
         return usersDao.findAll();
     }
@@ -33,7 +36,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public User updateUser(User user, UpdateUserDto updateUserDto) {
 
-        BeanUtils.copyProperties(updateUserDto, user, getNullPropertyNames(updateUserDto));
+        BeanUtils.copyProperties(updateUserDto, user, utilsService.getNullPropertyNames(updateUserDto));
 
         if (updateUserDto.getPassword() != null) {
             user.setPassword(passwordEncoder.encode(updateUserDto.getPassword()));
@@ -59,18 +62,5 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> getUsersbyType(UserType userType) {
         return usersDao.findByUserType(userType);
-    }
-
-    private static String[] getNullPropertyNames (Object source) {
-        final BeanWrapper src = new BeanWrapperImpl(source);
-        java.beans.PropertyDescriptor[] pds = src.getPropertyDescriptors();
-
-        Set<String> emptyNames = new HashSet<String>();
-        for(java.beans.PropertyDescriptor pd : pds) {
-            Object srcValue = src.getPropertyValue(pd.getName());
-            if (srcValue == null) emptyNames.add(pd.getName());
-        }
-        String[] result = new String[emptyNames.size()];
-        return emptyNames.toArray(result);
     }
 }

@@ -16,6 +16,9 @@ public class Notification extends CommonEntity {
     private Long id;
 
     @Column
+    private Long caseId;
+
+    @Column
     private String message;
 
     @Column

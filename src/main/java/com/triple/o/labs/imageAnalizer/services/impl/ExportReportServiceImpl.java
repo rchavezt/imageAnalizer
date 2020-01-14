@@ -6,9 +6,13 @@ import com.itextpdf.text.Image;
 import com.itextpdf.text.pdf.PdfPCell;
 import com.itextpdf.text.pdf.PdfPTable;
 import com.itextpdf.text.pdf.PdfWriter;
+import com.triple.o.labs.imageAnalizer.daos.CasesDao;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
+import com.triple.o.labs.imageAnalizer.enums.Status;
+import com.triple.o.labs.imageAnalizer.services.CaseService;
 import com.triple.o.labs.imageAnalizer.services.ExportReportService;
 import com.triple.o.labs.imageAnalizer.services.report.Footer;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import javax.imageio.ImageIO;
@@ -22,6 +26,10 @@ import java.net.URISyntaxException;
 
 @Service
 public class ExportReportServiceImpl implements ExportReportService {
+
+    @Autowired
+    private CasesDao casesDao;
+
     @Override
     public byte[] exportReport(MedicalCase medicalCase) throws IOException, URISyntaxException, DocumentException {
         ByteArrayOutputStream byteArrayOutputStream = new ByteArrayOutputStream();
@@ -94,7 +102,7 @@ public class ExportReportServiceImpl implements ExportReportService {
         Image analyzedModel = Image.getInstance(medicalCase.getSnapshotImageAnalyzed().getBase64file());
         analyzedModel.scaleAbsolute(200,400);
 
-        Image originalModel = Image.getInstance(medicalCase.getMedicalCaseImage().getBase64file());
+        Image originalModel = Image.getInstance(medicalCase.getCanvas().getBase64file());
         originalModel.scaleAbsolute(200,400);
 
         table.addCell(getCell(analyzedModel, PdfPCell.ALIGN_LEFT));
@@ -156,6 +164,12 @@ public class ExportReportServiceImpl implements ExportReportService {
         }
 
         document.close();
+
+        if (medicalCase.getStatus() != Status.COMPLETED) {
+            medicalCase.setStatus(Status.COMPLETED);
+            casesDao.save(medicalCase);
+        }
+
         return byteArrayOutputStream.toByteArray();
     }
 

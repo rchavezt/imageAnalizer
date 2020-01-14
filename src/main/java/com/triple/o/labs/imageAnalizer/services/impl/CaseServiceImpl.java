@@ -9,6 +9,7 @@ import com.triple.o.labs.imageAnalizer.entities.Image;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
 import com.triple.o.labs.imageAnalizer.entities.Patient;
 import com.triple.o.labs.imageAnalizer.entities.User;
+import com.triple.o.labs.imageAnalizer.enums.Anomaly;
 import com.triple.o.labs.imageAnalizer.enums.Status;
 import com.triple.o.labs.imageAnalizer.services.CaseService;
 import com.triple.o.labs.imageAnalizer.services.PatientService;
@@ -30,6 +31,9 @@ public class CaseServiceImpl implements CaseService {
 
     @Autowired
     private PatientService patientService;
+
+    @Autowired
+    UtilsService utilsService;
 
     @Override
     public List<MedicalCase> getCases() {
@@ -76,13 +80,6 @@ public class CaseServiceImpl implements CaseService {
     }
 
     @Override
-    public MedicalCase addAnalyzedBlue(MedicalCase medicalCase, Image analyzedBlue, String userEditing) {
-        medicalCase.setAnalyzedBlue(analyzedBlue);
-        medicalCase.setUpdatedBy(userEditing);
-        return casesDao.save(medicalCase);
-    }
-
-    @Override
     public MedicalCase addExtra(MedicalCase medicalCase, Image extra, String userEditing) {
         List<Image> extras = medicalCase.getExtraImages();
 
@@ -99,7 +96,7 @@ public class CaseServiceImpl implements CaseService {
     @Override
     public MedicalCase editMedicalCase(Long id, MedicalCaseDto medicalCaseDto, String userEditing) {
         MedicalCase medicalCase = getCase(id);
-        BeanUtils.copyProperties(medicalCaseDto, medicalCase);
+        BeanUtils.copyProperties(medicalCaseDto, medicalCase, utilsService.getNullPropertyNames(medicalCaseDto));
         medicalCase.setUpdatedBy(userEditing);
         return casesDao.save(medicalCase);
     }
@@ -131,6 +128,14 @@ public class CaseServiceImpl implements CaseService {
         MedicalCase medicalCase = casesDao.findById(id).get();
         medicalCase.setUpperAppliance(appliances.getUpperAppliance());
         medicalCase.setLowerAppliance(appliances.getLowerAppliance());
+        medicalCase.setUpdatedBy(userEditing);
+        return casesDao.save(medicalCase);
+    }
+
+    @Override
+    public MedicalCase addAnomaly(Long id, Anomaly anomaly, String userEditing) {
+        MedicalCase medicalCase = casesDao.findById(id).get();
+        medicalCase.setAnomaly(anomaly);
         medicalCase.setUpdatedBy(userEditing);
         return casesDao.save(medicalCase);
     }

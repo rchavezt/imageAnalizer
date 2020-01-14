@@ -1,5 +1,7 @@
 package com.triple.o.labs.imageAnalizer.entities;
 
+import lombok.Getter;
+
 import javax.persistence.Column;
 import javax.persistence.MappedSuperclass;
 import javax.persistence.PrePersist;
@@ -7,6 +9,7 @@ import javax.persistence.PreUpdate;
 import java.sql.Timestamp;
 
 @MappedSuperclass
+@Getter
 public abstract class CommonEntity {
 
     @Column(name = "ACTIVE", nullable = false)

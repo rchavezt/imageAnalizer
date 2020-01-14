@@ -6,6 +6,7 @@ import com.triple.o.labs.imageAnalizer.dtos.requests.MedicalCaseRequestDto;
 import com.triple.o.labs.imageAnalizer.entities.Image;
 import com.triple.o.labs.imageAnalizer.entities.MedicalCase;
 import com.triple.o.labs.imageAnalizer.entities.User;
+import com.triple.o.labs.imageAnalizer.enums.Anomaly;
 
 import java.util.List;
 
@@ -17,10 +18,10 @@ public interface CaseService {
     MedicalCase addSnapshot(MedicalCase medicalCase, Image snapshotImageAnalyzed, String userEditing);
     MedicalCase addBilmer(MedicalCase medicalCase, Image bilmer, String userEditing);
     MedicalCase addCanvas(MedicalCase medicalCase, Image canvas, String userEditing);
-    MedicalCase addAnalyzedBlue(MedicalCase medicalCase, Image analyzedBlue, String userEditing);
     MedicalCase addExtra(MedicalCase medicalCase, Image extra, String userEditing);
     MedicalCase editMedicalCase(Long id, MedicalCaseDto medicalCaseDto, String userEditing);
     MedicalCase createMedicalCase(User user, MedicalCaseRequestDto medicalCase, Image stl, String userCreating);
     String addObservations(Long id, String observations, String userEditing);
     MedicalCase addAppliances(Long id, AppliancesDto appliances, String userEditing);
+    MedicalCase addAnomaly(Long id, Anomaly anomaly, String userEditing);
 }
