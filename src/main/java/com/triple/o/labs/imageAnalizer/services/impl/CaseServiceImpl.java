@@ -12,6 +12,7 @@ import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.enums.Anomaly;
 import com.triple.o.labs.imageAnalizer.enums.Status;
 import com.triple.o.labs.imageAnalizer.services.CaseService;
+import com.triple.o.labs.imageAnalizer.services.ImageService;
 import com.triple.o.labs.imageAnalizer.services.PatientService;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,11 +34,27 @@ public class CaseServiceImpl implements CaseService {
     private PatientService patientService;
 
     @Autowired
+    private ImageService imageService;
+
+    @Autowired
     UtilsService utilsService;
 
     @Override
     public List<MedicalCase> getCases() {
         return casesDao.findAllByOrderByDateUpdatedDesc();
+    }
+
+    @Override
+    public boolean deleteCase(Long id) {
+        MedicalCase medicalCase = casesDao.findById(id).get();
+        medicalCase.setActive(false);
+
+        try {
+            casesDao.save(medicalCase);
+        } catch (Exception e){
+            return false;
+        }
+        return true;
     }
 
     @Override
@@ -97,6 +114,11 @@ public class CaseServiceImpl implements CaseService {
     public MedicalCase editMedicalCase(Long id, MedicalCaseDto medicalCaseDto, String userEditing) {
         MedicalCase medicalCase = getCase(id);
         BeanUtils.copyProperties(medicalCaseDto, medicalCase, utilsService.getNullPropertyNames(medicalCaseDto));
+
+        if (!medicalCase.getExtraImages().isEmpty()){
+            imageService.deleteExtras(medicalCase.getExtraImages());
+        }
+
         medicalCase.setUpdatedBy(userEditing);
         return casesDao.save(medicalCase);
     }

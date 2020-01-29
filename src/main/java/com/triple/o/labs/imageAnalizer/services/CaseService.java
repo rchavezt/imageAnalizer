@@ -12,6 +12,7 @@ import java.util.List;
 
 public interface CaseService {
     List<MedicalCase> getCases();
+    boolean deleteCase(Long id);
     MedicalCase getCase(Long id);
     List<MedicalCase> getCasesByDoctor(User user);
     MedicalCase addModels(MedicalCase medicalCase, Image medicalCaseImage, String userEditing);

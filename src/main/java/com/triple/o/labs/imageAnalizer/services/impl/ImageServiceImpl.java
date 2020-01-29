@@ -19,6 +19,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Date;
+import java.util.List;
 
 @Service
 public class ImageServiceImpl implements ImageService {
@@ -81,6 +82,14 @@ public class ImageServiceImpl implements ImageService {
         medicalCaseImage.setFileName(idPatient + new Date().getTime() + ".base64");
         medicalCaseImage.setBase64file(imageMerged);
         return imageDao.save(medicalCaseImage);
+    }
+
+    @Override
+    public void deleteExtras(List<Image> extras) {
+        for (Image extra : extras){
+            extra.setActive(false);
+            imageDao.save(extra);
+        }
     }
 
     private byte[] mergeImage(BufferedImage upperImage, BufferedImage lowerImage) {

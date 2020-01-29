@@ -19,6 +19,7 @@ import com.triple.o.labs.imageAnalizer.entities.User;
 import com.triple.o.labs.imageAnalizer.enums.AnalysisType;
 import com.triple.o.labs.imageAnalizer.enums.Anomaly;
 import com.triple.o.labs.imageAnalizer.enums.UserType;
+import com.triple.o.labs.imageAnalizer.exceptions.AppException;
 import com.triple.o.labs.imageAnalizer.exceptions.BadRequestException;
 import com.triple.o.labs.imageAnalizer.services.CaseService;
 import com.triple.o.labs.imageAnalizer.services.ImageService;
@@ -79,6 +80,26 @@ public class MedicalCaseController {
             response.add(converter.convertSimpleMedicalCase(medicalCase));
         }
         return response;
+    }
+
+    @Secured("ROLE_CASES_DELETE")
+    @RequestMapping(value = "/delete/{id}", method = RequestMethod.DELETE, produces = "application/json")
+    public MedicalCaseSimpleResponseDto deleteMedicatCase(@CurrentUser UserPrincipal userPrincipal, @PathVariable Long id){
+        User user = userService.getUser(userPrincipal.getId());
+        if (user.getUserType() != UserType.LAB && user.getUserType() != UserType.DOCTOR)
+            throw new BadRequestException("User must be Doctor or Laboratory");
+
+        MedicalCase medicalCase = caseService.getCase(id);
+
+        if (UserType.DOCTOR == user.getUserType() && medicalCase.getUser() != user){
+            throw new BadRequestException("Case you are trying to delete is assigned to another doctor");
+        }
+
+        if (caseService.deleteCase(id)) {
+            return converter.convertSimpleMedicalCase(medicalCase);
+        } else {
+            throw new AppException("Error on delete, please contact technical support");
+        }
     }
 
     @Secured("ROLE_CASES_VIEW")

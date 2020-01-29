@@ -109,8 +109,8 @@ public class UserController {
     @RequestMapping(value = "/getAll/{userType}", method = RequestMethod.GET, produces = "application/json")
     public List<UserDto> getAllByUserType(@CurrentUser UserPrincipal userPrincipal, @PathVariable UserType userType){
         User admin = userService.getUser(userPrincipal.getId());
-        if (UserType.ADMIN != admin.getUserType()) {
-            throw new BadRequestException("User must be ADMIN to get patients");
+        if (UserType.ADMIN != admin.getUserType() || UserType.LAB != admin.getUserType()) {
+            throw new BadRequestException("User must be ad administrator or laboratory to get patients");
         }
         List<UserDto> userDtoList = new ArrayList<>();
         userService.getUsersbyType(userType).forEach(user -> {

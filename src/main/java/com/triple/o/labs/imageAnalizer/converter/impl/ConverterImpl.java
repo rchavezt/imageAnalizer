@@ -51,6 +51,8 @@ public class ConverterImpl implements Converter {
         MedicalCaseSimpleResponseDto medicalCaseSimpleResponseDto = new MedicalCaseSimpleResponseDto();
         BeanUtils.copyProperties(medicalCase, medicalCaseSimpleResponseDto);
         medicalCaseSimpleResponseDto.setDoctorFullName(medicalCase.getUser().getName());
+        medicalCaseSimpleResponseDto.setAnalysisType(medicalCase.getAnalysisType());
+        medicalCaseSimpleResponseDto.setAnomaly(medicalCase.getAnomaly());
 
         PatientDto patientDto = new PatientDto();
         BeanUtils.copyProperties(medicalCase.getPatient(), patientDto);
