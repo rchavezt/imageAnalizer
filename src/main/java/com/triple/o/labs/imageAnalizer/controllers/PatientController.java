@@ -92,7 +92,7 @@ public class PatientController {
     }
 
     @PreAuthorize("hasRole('ROLE_PATIENT_CREATE') and hasRole('ROLE_PATIENT_ASSIGN')")
-    @RequestMapping(value = "/add/doctor/{id}", method = RequestMethod.POST, produces = "application/json")
+    @RequestMapping(value = "/add/doctor/{idDoctor}", method = RequestMethod.POST, produces = "application/json")
     public PatientDto addPatientToDoctor(@CurrentUser UserPrincipal userPrincipal, @RequestBody PatientDto patientDto, @PathVariable Long idDoctor) {
         User user = userService.getUser(userPrincipal.getId());
         User userDoctor = userService.getUser(idDoctor);
