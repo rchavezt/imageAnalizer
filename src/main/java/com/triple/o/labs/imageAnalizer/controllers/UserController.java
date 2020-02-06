@@ -64,14 +64,19 @@ public class UserController {
     }
 
     @Secured("ROLE_USER_EDIT")
-    @RequestMapping(value = "/edit", method = RequestMethod.PUT, produces = "application/json")
-    public UserDto updateUser(@CurrentUser UserPrincipal userPrincipal, @RequestBody UpdateUserDto updateUserDto) {
+    @RequestMapping(value = "/edit/{id}", method = RequestMethod.PUT, produces = "application/json")
+    public UserDto updateUser(@CurrentUser UserPrincipal userPrincipal, @RequestBody UpdateUserDto updateUserDto, @PathVariable Long id) {
+        User admin = userService.getUser(userPrincipal.getId());
+        if (UserType.ADMIN != admin.getUserType()) {
+            throw new BadRequestException("User must be ADMIN to deactivate a user");
+        }
+
         if(updateUserDto.getEmail() != null && usersDao.existsByEmail(updateUserDto.getEmail())) {
             throw new BadRequestException("User already exists with that email");
         }
 
-        User user = userService.getUser(userPrincipal.getId());
-        user =userService.updateUser(user, updateUserDto);
+        User user = userService.getUser(id);
+        user = userService.updateUser(user, updateUserDto);
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(user, userDto);
         return userDto;
