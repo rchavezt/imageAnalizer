@@ -36,6 +36,7 @@ public class RoleServiceImpl implements RoleService {
             roleSet.add(roleDao.findByName(RoleName.ROLE_PATIENT_DELETE));
             roleSet.add(roleDao.findByName(RoleName.ROLE_PATIENT_ASSIGN));
         } else if (UserType.LAB == userType) {
+            roleSet.add(roleDao.findByName(RoleName.ROLE_USER_LIST));
             roleSet.add(roleDao.findByName(RoleName.ROLE_USER_VIEW));
             roleSet.add(roleDao.findByName(RoleName.ROLE_USER_EDIT));
             roleSet.add(roleDao.findByName(RoleName.ROLE_DOCTOR_LIST));
